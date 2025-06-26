@@ -3,13 +3,13 @@ import pandas as pd
 import numpy as np
 
 
-#st.title('Customer Data Analytics')
+st.title('Customer Data Analytics')
 
 #st.write('Hello world!')
 
 
 
-st.title("Drag and Drop CSV Uploader")
+#st.title("Drag and Drop CSV Uploader")
 
 # File uploader – supports CSV and Excel files
 uploaded_file = st.file_uploader("Wähle eine Datei", type=["csv", "xlsx", "xls"])
