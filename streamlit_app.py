@@ -7,6 +7,21 @@ from collections import Counter
 import plotly.express as px
 
 
+
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-image: url("https://raw.githubusercontent.com/your-username/your-repo/main/assets/Kompetenzzetrum_Logo.png");
+        background-repeat: no-repeat;
+        background-position: top right;
+        background-size: 250px auto; /* Adjust size as needed */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 col1, col2 = st.columns([1, 5])
 with col1:
     st.image("assets/Logo_01.png", width=100)
@@ -15,6 +30,11 @@ with col2:
 
 # Tabs hinzufuegen
 tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width = "stretch")
+
+
+
+
+
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
