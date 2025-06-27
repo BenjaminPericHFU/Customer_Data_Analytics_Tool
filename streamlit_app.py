@@ -73,7 +73,7 @@ with tabs[1]:
     st.header("📊 Interaktive Visualisierung")
 
     # --- Verteilung einer Einzelvariablen ---
-    st.subheader("Verteilung der Daten visualisieren")
+    st.subheader("Verteilung der Daten analysieren")
 
     dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
     group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="group_tab1")
@@ -89,7 +89,7 @@ with tabs[1]:
 st.divider()
 
 # --- Vergleich zweier Variablen ---
-st.subheader("Beziehung zwischen Variablen")
+st.subheader("Beziehung zwischen Variablen visualisieren")
 
 x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
 y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
