@@ -55,53 +55,25 @@ with tabs[0]:
 
 ##############################################################################################################
 ##############################################################################################################
-with tabs[1]:
-    st.subheader("Daten visualisieren")
-    
-    if df_work is None:
-        st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
-    else:
-        # Spalten nach Typ trennen (anhand des ersten Werts als Heuristik)
-        numeric_cols = []
-        categorical_cols = []
+with tabs[1]:  # Visualisierung
+    st.header("📊 Interaktive Visualisierung")
 
-        for col in df_work.columns:
-            first_val = df_work[col].dropna().iloc[0] if not df_work[col].dropna().empty else None
-            if isinstance(first_val, (int, float)):
-                numeric_cols.append(col)
-            elif isinstance(first_val, str):
-                categorical_cols.append(col)
+    # Auswahl über Dropdown-Menüs
+    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"])
+    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"])
+    hue_col = st.selectbox("Gruppierung (Hue, optional):", ["Keine"] + column_classification["hue"])
 
-        # Auswahl für X und Y aus numerischen Spalten
-        st.markdown("### Wähle X-Achse (numerisch):")
-        x_choice = st.selectbox("X-Achse", options=numeric_cols, key="x_axis")
+    # Art der Visualisierung auswählen
+    plot_type = st.radio("Diagrammtyp wählen:", ["Scatterplot", "Boxplot", "Lineplot"])
 
-        st.markdown("### Wähle Y-Achse (numerisch):")
-        y_choice = st.selectbox("Y-Achse", options=numeric_cols, key="y_axis")
+    # Plot erstellen
+    fig, ax = plt.subplots()
 
-        # Auswahl für Hue (optional) aus kategorialen Spalten
-        hue_choice = None
-        if categorical_cols:
-            st.markdown("### Optional: Wähle eine Gruppierungsvariable (Hue):")
-            use_hue = st.checkbox("Hue verwenden?")
-            if use_hue:
-                hue_choice = st.selectbox("Hue", options=categorical_cols, key="hue_selector")
+    if plot_type == "Scatterplot":
+        sns.scatterplot(data=df, x=x_col, y=y_col, hue=None if hue_col == "Keine" else hue_col, ax=ax)
+    elif plot_type == "Boxplot":
+        sns.boxplot(data=df, x=hue_col if hue_col != "Keine" else x_col, y=y_col, ax=ax)
+    elif plot_type == "Lineplot":
+        sns.lineplot(data=df, x=x_col, y=y_col, hue=None if hue_col == "Keine" else hue_col, ax=ax)
 
-        # Plot
-        if x_choice and y_choice:
-            if x_choice == y_choice:
-                st.warning("Bitte wähle unterschiedliche Spalten für X und Y.")
-            else:
-                fig, ax = plt.subplots()
-                if hue_choice:
-                    for group in df_work[hue_choice].dropna().unique():
-                        subset = df_work[df_work[hue_choice] == group]
-                        ax.scatter(subset[x_choice], subset[y_choice], label=str(group), alpha=0.7)
-                    ax.legend(title=hue_choice)
-                else:
-                    ax.scatter(df_work[x_choice], df_work[y_choice], alpha=0.7)
-
-                ax.set_xlabel(x_choice)
-                ax.set_ylabel(y_choice)
-                ax.set_title(f"Scatterplot: {x_choice} vs {y_choice}")
-                st.pyplot(fig)
+    st.pyplot(fig)
