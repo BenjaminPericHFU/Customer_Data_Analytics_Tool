@@ -5,7 +5,7 @@ import numpy as np
 
 col1, col2 = st.columns([1, 4])
 with col1:
-    st.image("assets/Logo02.png", width=80)
+    st.image("assets/Logo_02.png", width=80)
 with col2:
     st.markdown("<h1 style='margin-top: 15px;'>Customer Data Analytics Tool</h1>", unsafe_allow_html=True)
 
