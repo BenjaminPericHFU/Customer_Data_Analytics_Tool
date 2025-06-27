@@ -67,46 +67,36 @@ with tabs[0]:
 
 ##############################################################################################################
 ##############################################################################################################
-with tabs[1]:
-    if df_work is None or not column_classification["xy"]:
-        st.warning("Keine geeigneten numerischen Spalten für Visualisierung gefunden.")
+with tabs[2]:  # Visualisierung
+    st.header("📊 Interaktive Visualisierung")
+
+    # Auswahl der Achsen
+    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"])
+    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"])
+
+    # Diagrammtyp wählen (keine Boxplots, da nicht unterstützt)
+    plot_type = st.radio("Diagrammtyp wählen:", ["Scatterplot", "Balkendiagramm", "Liniendiagramm", "Flächendiagramm"])
+
+    # Daten für die Charts vorbereiten
+    # st-Chart erwartet den Index als X-Achse. Wenn x_col numerisch ist, setzen wir es als Index.
+    # Sonst funktioniert es nur eingeschränkt.
+    chart_data = df[[x_col, y_col]].copy()
+
+    # Für Scatterplot st.scatter_chart erwartet eine DataFrame mit zwei Spalten: x und y
+    if plot_type == "Scatterplot":
+        # Einfacher Weg: st.scatter_chart akzeptiert DataFrame mit zwei Spalten, nutzt Index für x
+        scatter_data = chart_data.rename(columns={x_col: "x", y_col: "y"})
+        st.scatter_chart(scatter_data)
     else:
-        st.header("📊 Interaktive Visualisierung")
-
-        x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x")
-        y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y")
-        hue_col = st.selectbox("Gruppierung (Hue, optional):", ["Keine"] + column_classification["hue"], key="hue")
-
-        plot_type = st.radio(
-            "Diagrammtyp wählen:",
-            ["Scatterplot", "Boxplot", "Lineplot", "Areaplot", "Barplot"]
-        )
-
-        if plot_type in ["Lineplot", "Areaplot", "Barplot"]:
-            st.info(f"{plot_type} wird nur mit X als Index und Y als Wert angezeigt (ohne Gruppierung).")
-
-            if x_col != y_col:
-                plot_data = df_work[[x_col, y_col]].copy()
-                plot_data = plot_data.set_index(x_col).sort_index()
-
-                if plot_type == "Lineplot":
-                    st.line_chart(plot_data)
-                elif plot_type == "Areaplot":
-                    st.area_chart(plot_data)
-                elif plot_type == "Barplot":
-                    st.bar_chart(plot_data)
-            else:
-                st.error("X- und Y-Achse dürfen nicht identisch sein.")
-        else:
-            # Für Scatterplot, Boxplot usw. → wie vorher mit matplotlib/seaborn
-            fig, ax = plt.subplots()
-
-            if plot_type == "Scatterplot":
-                sns.scatterplot(data=df_work, x=x_col, y=y_col, hue=None if hue_col == "Keine" else hue_col, ax=ax)
-            elif plot_type == "Boxplot":
-                sns.boxplot(data=df_work, x=hue_col if hue_col != "Keine" else x_col, y=y_col, ax=ax)
-
-            st.pyplot(fig)
+        # Für die anderen Charttypen (bar, line, area) setzt Streamlit den Index als X-Achse
+        # Deshalb Index auf x_col setzen
+        chart_data.set_index(x_col, inplace=True)
+        if plot_type == "Balkendiagramm":
+            st.bar_chart(chart_data)
+        elif plot_type == "Liniendiagramm":
+            st.line_chart(chart_data)
+        elif plot_type == "Flächendiagramm":
+            st.area_chart(chart_data)
 
 
 
