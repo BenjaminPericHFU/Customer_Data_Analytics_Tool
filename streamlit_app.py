@@ -124,8 +124,89 @@ with tabs[1]:
     
     # ---------------------------------------------------------------------------------------------------
     # ---------------------------------------------------------------------------------------------------
-    with tabs[2]:
-        st.video("https://www.youtube.com/watch?v=4b5d3muPQmA&t=33s")
+    h tabs[2]:
+    st.header("🔍 K-Means Clustering – einfach erklärt")
+    st.markdown("🕐 **Lesezeit: ca. 5 Minuten**")
+
+    # Abschnitt: Lernarten
+    st.subheader("📚 Supervised vs. Unsupervised Learning")
+    st.markdown("""
+    Beim **Supervised Learning** lernst du mit bekannten Antworten – z. B. ob ein Kunde gekauft hat.  
+    ➕ Du hast Daten **mit Labels** und trainierst ein Modell, um Vorhersagen zu treffen.
+
+    Beim **Unsupervised Learning** gibt es **keine vorgegebenen Antworten**.  
+    ➕ Das Ziel ist, **Muster oder Gruppen** in den Daten selbstständig zu entdecken.
+    """)
+
+    # Abschnitt: K-Means
+    st.subheader("🎯 Was ist K-Means Clustering?")
+    st.markdown("""
+    K-Means ist ein einfacher Algorithmus, der versucht, Daten in **K Gruppen** zu unterteilen – so,  
+    dass Punkte innerhalb einer Gruppe **möglichst ähnlich** sind.
+
+    🔢 **Beispiel**: Du hast viele Kunden, aber keine Infos über deren Verhalten.  
+    K-Means hilft dir, sie automatisch in Gruppen einzuteilen, etwa:
+    - Kunden, die viel kaufen
+    - Kunden, die selten kommen
+    - Gelegenheitskäufer
+
+    **Wie funktioniert das?**
+    1. Wähle K zufällige Gruppenzentren
+    2. Ordne alle Punkte dem nächstgelegenen Zentrum zu
+    3. Berechne neue Gruppenzentren
+    4. Wiederhole, bis sich die Gruppen nicht mehr ändern
+
+    🧠 Der Algorithmus findet also **Strukturen in unbeschrifteten Daten** – ohne dass du ihm sagen musst, wie viele Gruppen es „wirklich“ gibt.
+    """)
+
+    # Interaktives Beispiel
+    st.subheader("🧪 Probiere es selbst aus")
+
+    from sklearn.datasets import make_blobs
+    from sklearn.cluster import KMeans
+    import matplotlib.pyplot as plt
+
+    k = st.slider("Wähle die Anzahl der Cluster (K)", min_value=1, max_value=6, value=3)
+
+    X, _ = make_blobs(n_samples=300, centers=4, cluster_std=1.0, random_state=42)
+    kmeans = KMeans(n_clusters=k, n_init="auto", random_state=42)
+    labels = kmeans.fit_predict(X)
+
+    fig, ax = plt.subplots()
+    ax.scatter(X[:, 0], X[:, 1], c=labels, cmap="tab10", s=40)
+    ax.set_title("K-Means Clustering Ergebnis")
+    st.pyplot(fig)
+
+    # Vorteile & Grenzen
+    st.subheader("✅ Vorteile & 🛠️ Grenzen von K-Means")
+
+    st.markdown("""
+    **Vorteile:**
+    - Einfach zu verstehen
+    - Schnell bei großen Datenmengen
+    - Gut, wenn Gruppen „rund“ verteilt sind
+
+    **Grenzen:**
+    - Du musst K vorher angeben
+    - Funktioniert schlechter bei unregelmäßigen Gruppen
+    - Reagiert empfindlich auf Ausreißer
+    """)
+
+    # Fazit
+    st.subheader("🧩 Fazit")
+    st.markdown("""
+    K-Means ist ein **leicht verständlicher Einstieg** ins Clustering und ideal,  
+    um **verborgene Strukturen** in unbeschrifteten Daten sichtbar zu machen.
+
+    📊 Besonders nützlich in Bereichen wie Kundensegmentierung, Produktempfehlung oder Marktforschung.
+    """)
+
+    st.success("🎉 Tipp: Bewege den Schieberegler oben, um zu sehen, wie sich die Gruppierung verändert.")
+    
+    st.divide()
+    st.video("https://www.youtube.com/watch?v=4b5d3muPQmA&t=33s")
+
+
 
 
 
