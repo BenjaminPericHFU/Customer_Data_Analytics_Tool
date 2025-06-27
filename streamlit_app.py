@@ -86,26 +86,33 @@ with tabs[1]:
     st.plotly_chart(fig_dist, use_container_width=True)
 
     # --- Trennlinie ---
-    st.divider()
+st.divider()
 
-    # --- Vergleich zweier Variablen ---
-    st.subheader("Beziehung zwischen Variablen visualisieren")
+# --- Vergleich zweier Variablen ---
+st.subheader("Beziehung zwischen Variablen")
 
-    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
-    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
-    hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
+x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
+y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
+hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
 
-    plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
-    color_arg = None if hue_col == "Keine" else hue_col
+plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
+color_arg = None if hue_col == "Keine" else hue_col
 
-    if plot_type == "Balkendiagramm":
-        fig = px.bar(df, x=x_col, y=y_col, color=color_arg)
-    elif plot_type == "Scatterplot":
-        fig = px.scatter(df, x=x_col, y=y_col, color=color_arg)
-    elif plot_type == "Liniendiagramm":
-        fig = px.line(df, x=x_col, y=y_col, color=color_arg)
+# Benutzerdefinierte, klare Farbpalette – z. B. Plotly, D3 oder Tableau-Schema
+custom_colors = [
+    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", 
+    "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", 
+    "#bcbd22", "#17becf"
+]
 
-    st.plotly_chart(fig, use_container_width=True)
+if plot_type == "Balkendiagramm":
+    fig = px.bar(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
+elif plot_type == "Scatterplot":
+    fig = px.scatter(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
+elif plot_type == "Liniendiagramm":
+    fig = px.line(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
+
+st.plotly_chart(fig, use_container_width=True)
 
 
 with tabs[3]:
