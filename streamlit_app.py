@@ -74,7 +74,7 @@ with tabs[1]:
 
     x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
     y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
-    hue_col = st.selectbox("Gruppierung (Hue, optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
+    hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
 
     plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
 
