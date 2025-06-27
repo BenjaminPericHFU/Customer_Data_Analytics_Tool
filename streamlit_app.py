@@ -42,8 +42,10 @@ with tabs[0]:
                 st.error(f"Error reading the uploaded file: {e}")
 
     if df_work is not None:
+        st.divider()
         max_cols = min(n_cols, len(df_work.columns))
         st.dataframe(df_work.iloc[:, :].head())
+        st.divider()
 
 
 ##############################################################################################################
