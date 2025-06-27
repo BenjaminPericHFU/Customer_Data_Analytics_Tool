@@ -42,6 +42,8 @@ with tabs[0]:
                 st.error(f"Error reading the uploaded file: {e}")
 
     if df_work is not None:
+
+        df_work = df_work.dropna()
         st.divider()
         st.subheader("Datensatz als Tabelle:")
         max_cols = min(n_cols, len(df_work.columns))
@@ -54,13 +56,11 @@ with tabs[0]:
 ##############################################################################################################
 ##############################################################################################################
 with tabs[1]:
-    st.subheader("Scatterplot Visualisierung")
-
+    st.subheader("Daten visualisieren")
     if df_work is None:
         st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
     else:
         columns = df_work.columns.tolist()
-
         st.markdown("### Wähle X-Achse:")
         x_choice = st.radio("X-Achse wählen", options=columns)
 
