@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-col1, col2 = st.columns([1, 2])
+col1, col2 = st.columns([1, 4])
 with col1:
     st.image("assets/Logo02.png", width=80)
 with col2:
