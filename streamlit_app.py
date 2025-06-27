@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import Counter
+import plotly.express as px
+
 
 col1, col2 = st.columns([1, 5])
 with col1:
@@ -67,36 +69,32 @@ with tabs[0]:
 
 ##############################################################################################################
 ##############################################################################################################
-with tabs[2]:  # Visualisierung
+with tabs[1]:  # Visualisierung
     st.header("📊 Interaktive Visualisierung")
 
-    # Auswahl der Achsen
+    # Auswahl über Dropdown-Menüs
     x_col = st.selectbox("X-Achse wählen:", column_classification["xy"])
     y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"])
+    hue_col = st.selectbox("Gruppierung (Hue, optional):", ["Keine"] + column_classification["hue"])
 
-    # Diagrammtyp wählen (keine Boxplots, da nicht unterstützt)
-    plot_type = st.radio("Diagrammtyp wählen:", ["Scatterplot", "Balkendiagramm", "Liniendiagramm", "Flächendiagramm"])
+    # Art der Visualisierung auswählen
+    plot_type = st.radio("Diagrammtyp wählen:", ["Scatterplot", "Boxplot", "Lineplot"])
 
-    # Daten für die Charts vorbereiten
-    # st-Chart erwartet den Index als X-Achse. Wenn x_col numerisch ist, setzen wir es als Index.
-    # Sonst funktioniert es nur eingeschränkt.
-    chart_data = df[[x_col, y_col]].copy()
+    # Farbe (color) nur setzen, wenn hue_col nicht "Keine" ist
+    color_arg = None if hue_col == "Keine" else hue_col
 
-    # Für Scatterplot st.scatter_chart erwartet eine DataFrame mit zwei Spalten: x und y
+    # Plot mit Plotly Express erstellen
     if plot_type == "Scatterplot":
-        # Einfacher Weg: st.scatter_chart akzeptiert DataFrame mit zwei Spalten, nutzt Index für x
-        scatter_data = chart_data.rename(columns={x_col: "x", y_col: "y"})
-        st.scatter_chart(scatter_data)
-    else:
-        # Für die anderen Charttypen (bar, line, area) setzt Streamlit den Index als X-Achse
-        # Deshalb Index auf x_col setzen
-        chart_data.set_index(x_col, inplace=True)
-        if plot_type == "Balkendiagramm":
-            st.bar_chart(chart_data)
-        elif plot_type == "Liniendiagramm":
-            st.line_chart(chart_data)
-        elif plot_type == "Flächendiagramm":
-            st.area_chart(chart_data)
+        fig = px.scatter(df, x=x_col, y=y_col, color=color_arg)
+    elif plot_type == "Boxplot":
+        # Boxplot: x-Achse ist Kategorie, y-Achse numerisch
+        # Falls keine Gruppierung, dann x = x_col, sonst x = hue_col
+        x_for_box = color_arg if color_arg else x_col
+        fig = px.box(df, x=x_for_box, y=y_col, color=color_arg)
+    elif plot_type == "Lineplot":
+        fig = px.line(df, x=x_col, y=y_col, color=color_arg)
+
+    st.plotly_chart(fig, use_container_width=True)
 
 
 
