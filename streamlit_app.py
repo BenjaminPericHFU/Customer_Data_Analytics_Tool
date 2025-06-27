@@ -166,6 +166,7 @@ with tabs[2]:
     from sklearn.datasets import make_blobs
     from sklearn.cluster import KMeans
     import matplotlib.pyplot as plt
+    import numpy as np
 
     k = st.slider("Wähle die Anzahl der Cluster (K)", min_value=1, max_value=6, value=3, key="kmeans_slider")
 
@@ -173,9 +174,16 @@ with tabs[2]:
     kmeans = KMeans(n_clusters=k, n_init="auto", random_state=42)
     labels = kmeans.fit_predict(X)
 
+    cluster_colors = ['red', 'green', 'blue', 'black', 'orange']
+    colors = np.array(cluster_colors * (k // len(cluster_colors) + 1))[:k]
+
     fig, ax = plt.subplots()
-    ax.scatter(X[:, 0], X[:, 1], c=labels, cmap="tab10", s=40)
+    for i in range(k):
+        points = X[labels == i]
+        ax.scatter(points[:, 0], points[:, 1], s=40, color=colors[i], label=f"Cluster {i+1}")
+
     ax.set_title("K-Means Clustering Ergebnis")
+    ax.legend()
     st.pyplot(fig)
 
     # Vorteile & Grenzen
@@ -206,6 +214,9 @@ with tabs[2]:
     
     st.divider()
     st.video("https://www.youtube.com/watch?v=4b5d3muPQmA&t=33s")
+
+
+
 
 
 
