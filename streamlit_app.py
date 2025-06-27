@@ -15,7 +15,7 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width =
 ##############################################################################################################
 ##############################################################################################################
 with tabs[0]:
-    st.subheader("Auswahl:")
+    st.subheader("Datensatz einlesen:")
     # st.markdown("Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden")
 
     use_custom = st.checkbox("Testdaten laden? (Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden)", value=True)
@@ -43,9 +43,11 @@ with tabs[0]:
 
     if df_work is not None:
         st.divider()
+        st.subheader("Datensatz als Tabelle:")
         max_cols = min(n_cols, len(df_work.columns))
         st.dataframe(df_work.iloc[:, :].head())
         st.divider()
+        st.subheader("Statistik zu Datensatz:")
         st.dataframe(df_work.describe())
 
 
