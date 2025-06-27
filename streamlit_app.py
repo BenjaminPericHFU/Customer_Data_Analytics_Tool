@@ -174,7 +174,7 @@ with tabs[2]:
     kmeans = KMeans(n_clusters=k, n_init="auto", random_state=42)
     labels = kmeans.fit_predict(X)
 
-    cluster_colors = ['blue', 'green', 'grey', 'red', 'orange']
+    cluster_colors = ['blue', 'green', 'grey', 'red', 'orange', 'purple']
     colors = np.array(cluster_colors * (k // len(cluster_colors) + 1))[:k]
 
     fig, ax = plt.subplots()
