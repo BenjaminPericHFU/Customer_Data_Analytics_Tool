@@ -75,6 +75,106 @@ with tabs[1]:
     # --- Verteilung einer Einzelvariablen ---
     st.subheader("Verteilung der Daten analysieren")
 
+    dist_col = st.selectbox(
+        "Variable für Verteilung wählen:",
+        column_classification["xy"],
+        key="dist_col_tab1"
+    )
+    group_col = st.selectbox(
+        "Farbliche Gruppierung (optional):",
+        ["Keine"] + column_classification["hue"],
+        key="group_tab1"
+    )
+    color_arg_dist = None if group_col == "Keine" else group_col
+
+    # Gruppierungsvariable als Kategorie casten (wichtig!)
+    if color_arg_dist is not None:
+        df[color_arg_dist] = df[color_arg_dist].astype("category")
+
+    fig_dist = px.histogram(
+        df,
+        x=dist_col,
+        color=color_arg_dist,
+        color_discrete_sequence=custom_colors
+    )
+    fig_dist.update_layout(barmode='overlay')
+    fig_dist.update_traces(opacity=0.75)
+
+    st.plotly_chart(fig_dist, use_container_width=True)
+
+    st.divider()
+
+    # --- Vergleich zweier Variablen ---
+    st.subheader("Beziehung zwischen Variablen")
+
+    x_col = st.selectbox(
+        "X-Achse wählen:",
+        column_classification["xy"],
+        key="x_axis_tab1"
+    )
+    y_col = st.selectbox(
+        "Y-Achse wählen:",
+        column_classification["xy"],
+        key="y_axis_tab1"
+    )
+    hue_col = st.selectbox(
+        "Farbliche Gruppierung (optional):",
+        ["Keine"] + column_classification["hue"],
+        key="hue_tab1"
+    )
+
+    plot_type = st.radio(
+        "Diagrammtyp wählen:",
+        ["Balkendiagramm", "Scatterplot", "Liniendiagramm"],
+        key="plot_type_tab1"
+    )
+    color_arg = None if hue_col == "Keine" else hue_col
+
+    # Gruppierungsvariable als Kategorie casten (wichtig!)
+    if color_arg is not None:
+        df[color_arg] = df[color_arg].astype("category")
+
+    # Optional: Nur die Top-10-Kategorien anzeigen (bei sehr vielen Kategorien)
+    # if color_arg is not None:
+    #     top_cats = df[color_arg].value_counts().index[:10]
+    #     df = df[df[color_arg].isin(top_cats)]
+    #     df[color_arg] = df[color_arg].astype("category")
+
+    if plot_type == "Balkendiagramm":
+        fig = px.bar(
+            df,
+            x=x_col,
+            y=y_col,
+            color=color_arg,
+            color_discrete_sequence=custom_colors
+        )
+    elif plot_type == "Scatterplot":
+        fig = px.scatter(
+            df,
+            x=x_col,
+            y=y_col,
+            color=color_arg,
+            color_discrete_sequence=custom_colors
+        )
+    elif plot_type == "Liniendiagramm":
+        fig = px.line(
+            df,
+            x=x_col,
+            y=y_col,
+            color=color_arg,
+            color_discrete_sequence=custom_colors
+        )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+
+
+with tabs[2]:
+    st.header("📊 Interaktive Visualisierung")
+
+    # --- Verteilung einer Einzelvariablen ---
+    st.subheader("Verteilung der Daten analysieren")
+
     dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
     group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="group_tab1")
     color_arg_dist = None if group_col == "Keine" else group_col
