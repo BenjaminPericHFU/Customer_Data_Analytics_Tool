@@ -27,9 +27,8 @@ with tabs[0]:
         st.info("Using predefined custom dataset: `daten.csv`")
         try:
             df = pd.read_csv("data/daten.csv")
-            # Nur die ersten 10 Spalten behalten
-            df_work = df.iloc[:, :10].copy()
-            st.success("Custom dataset loaded successfully with max. 10 columns.")
+            df_work = df.copy()
+            st.success("Custom dataset loaded successfully.")
         except Exception as e:
             st.error(f"Could not load custom dataset: {e}")
     else:
@@ -40,15 +39,16 @@ with tabs[0]:
                     df = pd.read_csv(uploaded_file)
                 else:
                     df = pd.read_excel(uploaded_file)
-                df_work = df.iloc[:, :10].copy()  # ebenfalls auf max. 10 Spalten limitieren
-                st.success("File successfully uploaded with max. 10 columns.")
+                df_work = df.copy()
+                st.success("File successfully uploaded.")
             except Exception as e:
                 st.error(f"Error reading the uploaded file: {e}")
 
     if df_work is not None:
-        st.write("### Spaltennamen (max. 10):")
+        st.write("### Spaltennamen:")
         st.write(df_work.columns.tolist())
 
-        st.write("### Datenvorschau:")
-        st.write(df_work.head())
+        st.write("### Datenvorschau (max. 10 Spalten):")
+        n_cols = min(10, len(df_work.columns))
+        st.dataframe(df_work.iloc[:, :n_cols].head())
 
