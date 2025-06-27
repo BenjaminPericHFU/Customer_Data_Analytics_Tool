@@ -69,14 +69,14 @@ with tabs[0]:
 
 ##############################################################################################################
 ##############################################################################################################
-with tabs[1]:  # Visualisierung im zweiten Tab
+with tabs[1]:
     st.header("📊 Interaktive Visualisierung")
 
-    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"])
-    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"])
-    hue_col = st.selectbox("Gruppierung (Hue, optional):", ["Keine"] + column_classification["hue"])
+    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
+    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
+    hue_col = st.selectbox("Gruppierung (Hue, optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
 
-    plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"])
+    plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
 
     color_arg = None if hue_col == "Keine" else hue_col
 
