@@ -45,10 +45,5 @@ with tabs[0]:
                 st.error(f"Error reading the uploaded file: {e}")
 
     if df_work is not None:
-        st.write("### Spaltennamen:")
-        st.write(df_work.columns.tolist())
-
-        st.write("### Datenvorschau (max. 10 Spalten):")
-        n_cols = min(10, len(df_work.columns))
         st.dataframe(df_work.iloc[:, :n_cols].head())
 
