@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd 
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from collections import Counter
 
 col1, col2 = st.columns([1, 5])
@@ -51,6 +53,16 @@ with tabs[0]:
         st.divider()
         st.subheader("Statistik zu Datensatz:")
         st.dataframe(df_work.describe())
+
+        
+        # Klassifikation nach Anzahl eindeutiger Werte (für spätere Visualisierung)
+        column_classification = {"xy": [], "hue": []}
+        for col in df_work.columns:
+            nunique = df_work[col].nunique()
+            if pd.api.types.is_numeric_dtype(df_work[col]) and nunique > 5:
+                column_classification["xy"].append(col)
+            elif 1 < nunique <= 5:
+                column_classification["hue"].append(col)
 
 
 ##############################################################################################################
