@@ -43,7 +43,7 @@ with tabs[0]:
 
     if df_work is not None:
         max_cols = min(n_cols, len(df_work.columns))
-        st.dataframe(df_work.iloc[:, :max_cols].head())
+        st.dataframe(df_work.iloc[:, :].head())
 
 
 ##############################################################################################################
