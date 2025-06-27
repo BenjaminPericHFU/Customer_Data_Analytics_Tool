@@ -8,7 +8,7 @@ import plotly.express as px
 
 
 # Logo ganz oben zentriert
-st.image("assets/Kompetenzzentrum_Logo.png", width=300)
+st.image("assets/Kompetenzzentrum_Logo.png", width=500)
 
 col1, col2 = st.columns([1, 5])
 with col1:
