@@ -46,6 +46,7 @@ with tabs[0]:
         max_cols = min(n_cols, len(df_work.columns))
         st.dataframe(df_work.iloc[:, :].head())
         st.divider()
+        st.dataframe(df_work.describe())
 
 
 ##############################################################################################################
