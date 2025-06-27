@@ -75,7 +75,7 @@ with tabs[1]:
     st.header("📊 Interaktive Visualisierung")
 
     # --- Verteilung einer Einzelvariablen ---
-    st.subheader("Verteilung analysieren")
+    st.subheader("Verteilung der Daten analysieren")
 
     dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
     dist_type = st.radio("Diagrammtyp für Verteilung:", ["Histogramm", "KDE (Dichtekurve)"], key="dist_type_tab1")
