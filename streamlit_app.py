@@ -17,8 +17,10 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width =
 
 with tabs[0]: 
     # Checkbox: use custom data or not
-    st.subheader("Auswahl: Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden?")
-    use_custom = st.checkbox("Use custom dataset (daten.csv)", value=True)
+    st.subheader("Auswahl:")
+    st.caption("Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden")
+    
+    use_custom = st.checkbox("Testdaten laden:", value=True)
     
     df = None
     
