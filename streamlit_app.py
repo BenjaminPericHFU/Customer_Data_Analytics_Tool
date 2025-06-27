@@ -7,19 +7,8 @@ from collections import Counter
 import plotly.express as px
 
 
-def add_logo_top_right(image_path, width=150):
-    st.markdown(
-        f"""
-        <div style="position: fixed; top: 1rem; right: 1rem; z-index: 100;">
-            <img src="app/{image_path}" width="{width}">
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-# Aufruf (direkt am Anfang deiner App)
-add_logo_top_right("assets/Kompetenzzentrum_Logo.png")
-
+# Logo ganz oben zentriert
+st.image("assets/Kompetenzzentrum_Logo.png", width=300)
 
 col1, col2 = st.columns([1, 5])
 with col1:
