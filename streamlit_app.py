@@ -29,7 +29,7 @@ with tabs[0]:
     
         try:
             # Load from local file (make sure 'daten.csv' is in the same folder)
-            df = pd.read_csv("/data/daten.csv")
+            df = pd.read_csv("data/daten.csv")
     
             # OR if using raw GitHub link, uncomment and set the correct URL:
             # url = "https://raw.githubusercontent.com/yourusername/yourrepo/main/daten.csv"
