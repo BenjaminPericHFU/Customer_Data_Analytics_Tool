@@ -16,7 +16,7 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width =
 ##############################################################################################################
 with tabs[0]:
     st.subheader("Auswahl:")
-    st.caption("Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden")
+    st.markdown("Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden")
 
     use_custom = st.checkbox("Testdaten laden:", value=True)
 
@@ -24,11 +24,11 @@ with tabs[0]:
     n_cols = 10  # maximale Spaltenanzahl für Anzeige
 
     if use_custom:
-        st.info("Using predefined custom dataset: `daten.csv`")
+        st.info("Testdatensatz names `daten.csv` wird verwendet.")
         try:
             df = pd.read_csv("data/daten.csv", sep=';')
             df_work = df.copy()
-            st.success("Custom dataset loaded successfully.")
+            st.success("Datensatz wurde erfolgreich eingeladen.")
         except Exception as e:
             st.error(f"Could not load custom dataset: {e}")
     else:
@@ -37,7 +37,7 @@ with tabs[0]:
             try:
                 df = pd.read_csv(uploaded_file, sep=';')
                 df_work = df.copy()
-                st.success("File successfully uploaded.")
+                st.success("Datensatz wurde erfolgreich eingeladen.")
             except Exception as e:
                 st.error(f"Error reading the uploaded file: {e}")
 
