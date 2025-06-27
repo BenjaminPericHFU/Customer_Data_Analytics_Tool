@@ -3,6 +3,13 @@ import pandas as pd
 import numpy as np
 
 
+ol1, col2 = st.columns([1, 4])
+with col1:
+    st.image("assets/logo.jpg", width=80)
+with col2:
+    st.markdown("<h1 style='margin-top: 15px;'>Customer Data Analytics Tool</h1>", unsafe_allow_html=True)
+
+
 st.title('Customer Data Analytics Tool')
 
 tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width = "stretch")
