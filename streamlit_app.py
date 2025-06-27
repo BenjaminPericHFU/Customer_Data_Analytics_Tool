@@ -18,49 +18,48 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width =
 #
 #st.dataframe(pd.DataFrame(df.columns, columns=["Column Names"]))
 
-st.title("Custom or Uploaded Data Loader")
-
-# Checkbox: use custom data or not
-use_custom = st.checkbox("Use custom dataset (daten.csv)", value=True)
-
-df = None
-
-if use_custom:
-    st.info("Using predefined custom dataset: `daten.csv`")
-
-    try:
-        # Load from local file (make sure 'daten.csv' is in the same folder)
-        df = pd.read_csv("daten.csv")
-
-        # OR if using raw GitHub link, uncomment and set the correct URL:
-        # url = "https://raw.githubusercontent.com/yourusername/yourrepo/main/daten.csv"
-        # df = pd.read_csv(url)
-
-        st.success("Custom dataset loaded successfully.")
-
-    except Exception as e:
-        st.error(f"Could not load custom dataset: {e}")
-
-else:
-    uploaded_file = st.file_uploader("Upload your CSV or Excel file", type=["csv", "xls", "xlsx"])
-
-    if uploaded_file is not None:
+with tabs[0]: 
+    # Checkbox: use custom data or not
+    use_custom = st.checkbox("Use custom dataset (daten.csv)", value=True)
+    
+    df = None
+    
+    if use_custom:
+        st.info("Using predefined custom dataset: `daten.csv`")
+    
         try:
-            if uploaded_file.name.endswith('.csv'):
-                df = pd.read_csv(uploaded_file)
-            else:
-                df = pd.read_excel(uploaded_file)
-
-            st.success("File successfully uploaded.")
-
+            # Load from local file (make sure 'daten.csv' is in the same folder)
+            df = pd.read_csv("daten.csv")
+    
+            # OR if using raw GitHub link, uncomment and set the correct URL:
+            # url = "https://raw.githubusercontent.com/yourusername/yourrepo/main/daten.csv"
+            # df = pd.read_csv(url)
+    
+            st.success("Custom dataset loaded successfully.")
+    
         except Exception as e:
-            st.error(f"Error reading the uploaded file: {e}")
-
-# If df was loaded successfully, show info
-if df is not None:
-    st.write("### Column Names:")
-    st.dataframe(pd.DataFrame(df.columns, columns=["Columns"]))
-
-    st.write("### Data Preview:")
-    st.dataframe(df.head())
+            st.error(f"Could not load custom dataset: {e}")
+    
+    else:
+        uploaded_file = st.file_uploader("Upload your CSV or Excel file", type=["csv", "xls", "xlsx"])
+    
+        if uploaded_file is not None:
+            try:
+                if uploaded_file.name.endswith('.csv'):
+                    df = pd.read_csv(uploaded_file)
+                else:
+                    df = pd.read_excel(uploaded_file)
+    
+                st.success("File successfully uploaded.")
+    
+            except Exception as e:
+                st.error(f"Error reading the uploaded file: {e}")
+    
+    # If df was loaded successfully, show info
+    if df is not None:
+        st.write("### Column Names:")
+        st.dataframe(pd.DataFrame(df.columns, columns=["Columns"]))
+    
+        st.write("### Data Preview:")
+        st.dataframe(df.head())
 
