@@ -67,7 +67,53 @@ with tabs[0]:
 
 ##############################################################################################################
 ##############################################################################################################
-with tabs[1]:  # Visualisierung
+with tabs[1]:
+    if df_work is None or not column_classification["xy"]:
+        st.warning("Keine geeigneten numerischen Spalten für Visualisierung gefunden.")
+    else:
+        st.header("📊 Interaktive Visualisierung")
+
+        x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x")
+        y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y")
+        hue_col = st.selectbox("Gruppierung (Hue, optional):", ["Keine"] + column_classification["hue"], key="hue")
+
+        plot_type = st.radio(
+            "Diagrammtyp wählen:",
+            ["Scatterplot", "Boxplot", "Lineplot", "Areaplot", "Barplot"]
+        )
+
+        if plot_type in ["Lineplot", "Areaplot", "Barplot"]:
+            st.info(f"{plot_type} wird nur mit X als Index und Y als Wert angezeigt (ohne Gruppierung).")
+
+            if x_col != y_col:
+                plot_data = df_work[[x_col, y_col]].copy()
+                plot_data = plot_data.set_index(x_col).sort_index()
+
+                if plot_type == "Lineplot":
+                    st.line_chart(plot_data)
+                elif plot_type == "Areaplot":
+                    st.area_chart(plot_data)
+                elif plot_type == "Barplot":
+                    st.bar_chart(plot_data)
+            else:
+                st.error("X- und Y-Achse dürfen nicht identisch sein.")
+        else:
+            # Für Scatterplot, Boxplot usw. → wie vorher mit matplotlib/seaborn
+            fig, ax = plt.subplots()
+
+            if plot_type == "Scatterplot":
+                sns.scatterplot(data=df_work, x=x_col, y=y_col, hue=None if hue_col == "Keine" else hue_col, ax=ax)
+            elif plot_type == "Boxplot":
+                sns.boxplot(data=df_work, x=hue_col if hue_col != "Keine" else x_col, y=y_col, ax=ax)
+
+            st.pyplot(fig)
+
+
+
+
+
+
+with tabs[2]:  # Visualisierung
     st.header("📊 Interaktive Visualisierung")
 
     # Auswahl über Dropdown-Menüs
