@@ -81,6 +81,46 @@ with tabs[1]:
     st.header("📊 Interaktive Visualisierung")
 
     # --- Verteilung einer Einzelvariablen ---
+    st.subheader("Verteilung analysieren")
+
+    dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
+    dist_type = st.radio("Diagrammtyp für Verteilung:", ["Histogramm", "KDE (Dichtekurve)"], key="dist_type_tab1")
+
+    if dist_type == "Histogramm":
+        fig_dist = px.histogram(df, x=dist_col)
+    elif dist_type == "KDE (Dichtekurve)":
+        fig_dist = px.density_contour(df, x=dist_col)
+
+    st.plotly_chart(fig_dist, use_container_width=True)
+
+    # --- Trennlinie ---
+    st.divider()
+
+    # --- Vergleich zweier Variablen ---
+    st.subheader("Beziehung zwischen Variablen")
+
+    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
+    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
+    hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
+
+    plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
+
+    color_arg = None if hue_col == "Keine" else hue_col
+
+    if plot_type == "Balkendiagramm":
+        fig = px.bar(df, x=x_col, y=y_col, color=color_arg)
+    elif plot_type == "Scatterplot":
+        fig = px.scatter(df, x=x_col, y=y_col, color=color_arg)
+    elif plot_type == "Liniendiagramm":
+        fig = px.line(df, x=x_col, y=y_col, color=color_arg)
+
+    st.plotly_chart(fig, use_container_width=True)
+
+
+with tabs[2]:
+    st.header("📊 Interaktive Visualisierung")
+
+    # --- Verteilung einer Einzelvariablen ---
     st.subheader("Verteilung der Daten analysieren")
 
     dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
