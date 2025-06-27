@@ -22,6 +22,7 @@ with tabs[0]:
     use_custom = st.checkbox("Testdaten laden:", value=True)
 
     df_work = None
+    n_cols = 10  # maximale Spaltenanzahl für Anzeige
 
     if use_custom:
         st.info("Using predefined custom dataset: `daten.csv`")
@@ -32,18 +33,15 @@ with tabs[0]:
         except Exception as e:
             st.error(f"Could not load custom dataset: {e}")
     else:
-        uploaded_file = st.file_uploader("Upload your CSV or Excel file", type=["csv", "xls", "xlsx"])
+        uploaded_file = st.file_uploader("Upload your CSV file (nur CSV mit ';' als Separator)", type=["csv"])
         if uploaded_file is not None:
             try:
-                if uploaded_file.name.endswith('.csv'):
-                    df = pd.read_csv(uploaded_file, sep=';')
-                else:
-                    df = pd.read_excel(uploaded_file)
+                df = pd.read_csv(uploaded_file, sep=';')
                 df_work = df.copy()
                 st.success("File successfully uploaded.")
             except Exception as e:
                 st.error(f"Error reading the uploaded file: {e}")
 
     if df_work is not None:
-        st.dataframe(df_work.iloc[:, :n_cols].head())
-
+        max_cols = min(n_cols, len(df_work.columns))
+        st.dataframe(df_work.iloc[:, :max_cols].head())
