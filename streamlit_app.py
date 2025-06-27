@@ -9,24 +9,15 @@ with col1:
 with col2:
     st.markdown("<h1 style='margin-top: 15px;'>Customer Data Analytics Tool</h1>", unsafe_allow_html=True)
 
-
-st.title('Customer Data Analytics Tool')
-
+# Tabs hinzufuegen
 tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width = "stretch")
 
-# File uploader – supports CSV and Excel files
-#"""uploaded_file = st.file_uploader("Input Customer Data: ", type=["csv", "xlsx", "xls"])
-
-#if uploaded_file is not None:
-#    if uploaded_file.name.endswith(".csv"):
-#        df = pd.read_csv(uploaded_file)
-#    else:
-#        df = pd.read_excel(uploaded_file, engine='openpyxl')
-#
-#st.dataframe(pd.DataFrame(df.columns, columns=["Column Names"]))
+##############################################################################################################
+##############################################################################################################
 
 with tabs[0]: 
     # Checkbox: use custom data or not
+    st.subheader("Auswahl: Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden?")
     use_custom = st.checkbox("Use custom dataset (daten.csv)", value=True)
     
     df = None
