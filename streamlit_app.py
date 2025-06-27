@@ -18,7 +18,6 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width =
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
-
 with tabs[0]:
     st.subheader("Datensatz einlesen:")
     # st.markdown("Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden")
@@ -70,7 +69,6 @@ with tabs[0]:
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
-
 with tabs[1]:
     st.header("📊 Interaktive Visualisierung")
 
@@ -78,12 +76,12 @@ with tabs[1]:
     st.subheader("Verteilung der Daten analysieren")
 
     dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
-    dist_type = st.radio("Diagrammtyp für Verteilung:", ["Histogramm", "KDE (Dichtekurve)"], key="dist_type_tab1")
+    group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="group_tab1")
+    color_arg_dist = None if group_col == "Keine" else group_col
 
-    if dist_type == "Histogramm":
-        fig_dist = px.histogram(df, x=dist_col)
-    elif dist_type == "KDE (Dichtekurve)":
-        fig_dist = px.density_contour(df, x=dist_col)
+    fig_dist = px.histogram(df, x=dist_col, color=color_arg_dist)
+    fig_dist.update_layout(barmode='overlay')  # oder 'group', je nach Präferenz
+    fig_dist.update_traces(opacity=0.75)  # bessere Lesbarkeit bei überlagerung
 
     st.plotly_chart(fig_dist, use_container_width=True)
 
@@ -98,7 +96,6 @@ with tabs[1]:
     hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
 
     plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
-
     color_arg = None if hue_col == "Keine" else hue_col
 
     if plot_type == "Balkendiagramm":
