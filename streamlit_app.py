@@ -26,7 +26,7 @@ with tabs[0]:
     if use_custom:
         st.info("Using predefined custom dataset: `daten.csv`")
         try:
-            df = pd.read_csv("data/daten.csv")
+            df = pd.read_csv("data/daten.csv", sep=';')
             df_work = df.copy()
             st.success("Custom dataset loaded successfully.")
         except Exception as e:
@@ -36,7 +36,7 @@ with tabs[0]:
         if uploaded_file is not None:
             try:
                 if uploaded_file.name.endswith('.csv'):
-                    df = pd.read_csv(uploaded_file)
+                    df = pd.read_csv(uploaded_file, sep=';')
                 else:
                     df = pd.read_excel(uploaded_file)
                 df_work = df.copy()
