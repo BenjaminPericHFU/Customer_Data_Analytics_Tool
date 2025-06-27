@@ -69,7 +69,32 @@ with tabs[0]:
 
 ##############################################################################################################
 ##############################################################################################################
+with tabs[1]:  # Visualisierung
+    st.header("📊 Interaktive Visualisierung")
 
+    # Auswahl über Dropdown-Menüs
+    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"])
+    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"])
+    hue_col = st.selectbox("Gruppierung (Hue, optional):", ["Keine"] + column_classification["hue"])
+
+    # Art der Visualisierung auswählen
+    plot_type = st.radio("Diagrammtyp wählen:", ["Scatterplot", "Boxplot", "Lineplot"])
+
+    # Farbe (color) nur setzen, wenn hue_col nicht "Keine" ist
+    color_arg = None if hue_col == "Keine" else hue_col
+
+    # Plot mit Plotly Express erstellen
+    if plot_type == "Scatterplot":
+        fig = px.scatter(df, x=x_col, y=y_col, color=color_arg)
+    elif plot_type == "Boxplot":
+        # Boxplot: x-Achse ist Kategorie, y-Achse numerisch
+        # Falls keine Gruppierung, dann x = x_col, sonst x = hue_col
+        x_for_box = color_arg if color_arg else x_col
+        fig = px.box(df, x=x_for_box, y=y_col, color=color_arg)
+    elif plot_type == "Lineplot":
+        fig = px.line(df, x=x_col, y=y_col, color=color_arg)
+
+    st.plotly_chart(fig, use_container_width=True)
 
 
 
