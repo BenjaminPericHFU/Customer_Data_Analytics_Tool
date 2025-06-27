@@ -16,9 +16,9 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width =
 ##############################################################################################################
 with tabs[0]:
     st.subheader("Auswahl:")
-    st.markdown("Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden")
+    # st.markdown("Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden")
 
-    use_custom = st.checkbox("Testdaten laden:", value=True)
+    use_custom = st.checkbox("Testdaten laden? (Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden)", value=True)
 
     df_work = None
     n_cols = 10  # maximale Spaltenanzahl für Anzeige
