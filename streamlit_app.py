@@ -14,7 +14,6 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width =
 
 ##############################################################################################################
 ##############################################################################################################
-
 with tabs[0]:
     st.subheader("Auswahl:")
     st.caption("Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden")
@@ -45,3 +44,31 @@ with tabs[0]:
     if df_work is not None:
         max_cols = min(n_cols, len(df_work.columns))
         st.dataframe(df_work.iloc[:, :max_cols].head())
+
+
+##############################################################################################################
+##############################################################################################################
+with tabs[1]:
+    st.subheader("Scatterplot Visualisierung")
+
+    if df_work is None:
+        st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
+    else:
+        columns = df_work.columns.tolist()
+
+        st.markdown("### Wähle X-Achse:")
+        x_choice = st.radio("X-Achse wählen", options=columns)
+
+        st.markdown("### Wähle Y-Achse:")
+        y_choice = st.radio("Y-Achse wählen", options=columns)
+
+        if x_choice and y_choice:
+            if x_choice == y_choice:
+                st.warning("Bitte wähle unterschiedliche Spalten für X und Y.")
+            else:
+                fig, ax = plt.subplots()
+                ax.scatter(df_work[x_choice], df_work[y_choice])
+                ax.set_xlabel(x_choice)
+                ax.set_ylabel(y_choice)
+                ax.set_title(f"Scatterplot: {x_choice} vs {y_choice}")
+                st.pyplot(fig)
