@@ -89,7 +89,7 @@ with tabs[1]:
     st.divider()
 
     # --- Vergleich zweier Variablen ---
-    st.subheader("Beziehung zwischen Variablen")
+    st.subheader("Beziehung zwischen Variablen visualisieren")
 
     x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
     y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
