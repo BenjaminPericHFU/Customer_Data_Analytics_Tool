@@ -5,7 +5,7 @@ import numpy as np
 
 st.title('Customer Data Analytics Tool')
 
-tabs = st.tabs(["1. Daten", "2. Visualisierung", "3. ML-Training", "4. Auswertung"], width = "stretch")
+tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width = "stretch")
 
 # File uploader – supports CSV and Excel files
 #"""uploaded_file = st.file_uploader("Input Customer Data: ", type=["csv", "xlsx", "xls"])
