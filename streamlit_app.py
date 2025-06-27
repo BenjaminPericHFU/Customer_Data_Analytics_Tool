@@ -7,20 +7,19 @@ from collections import Counter
 import plotly.express as px
 
 
+def add_logo_top_right(image_path, width=150):
+    st.markdown(
+        f"""
+        <div style="position: fixed; top: 1rem; right: 1rem; z-index: 100;">
+            <img src="app/{image_path}" width="{width}">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-st.markdown(
-    """
-    <style>
-    .stApp {
-        background-image: url("https://raw.githubusercontent.com/your-username/your-repo/main/assets/Kompetenzzetrum_Logo.png");
-        background-repeat: no-repeat;
-        background-position: top right;
-        background-size: 250px auto; /* Adjust size as needed */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# Aufruf (direkt am Anfang deiner App)
+add_logo_top_right("assets/Kompetenzzentrum_Logo.png")
+
 
 col1, col2 = st.columns([1, 5])
 with col1:
