@@ -22,8 +22,6 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Training", "Auswertung"], width =
 
 
 
-
-
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[0]:
@@ -75,6 +73,7 @@ with tabs[0]:
                 column_classification["hue"].append(col)
 
 
+
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[1]:
@@ -121,7 +120,9 @@ with tabs[1]:
         fig = px.line(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
     
     st.plotly_chart(fig, use_container_width=True)
-    
+
+
+
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 while tabs[2]:
@@ -166,7 +167,7 @@ while tabs[2]:
     from sklearn.cluster import KMeans
     import matplotlib.pyplot as plt
 
-    k = st.slider("Wähle die Anzahl der Cluster (K)", min_value=1, max_value=6, value=3)
+    k = st.slider("Wähle die Anzahl der Cluster (K)", min_value=1, max_value=6, value=3, key="kmeans_slider")
 
     X, _ = make_blobs(n_samples=300, centers=4, cluster_std=1.0, random_state=42)
     kmeans = KMeans(n_clusters=k, n_init="auto", random_state=42)
