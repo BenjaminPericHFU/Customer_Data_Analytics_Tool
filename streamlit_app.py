@@ -203,7 +203,7 @@ while tabs[2]:
 
     st.success("🎉 Tipp: Bewege den Schieberegler oben, um zu sehen, wie sich die Gruppierung verändert.")
     
-    st.divide()
+    st.divider()
     st.video("https://www.youtube.com/watch?v=4b5d3muPQmA&t=33s")
 
 
