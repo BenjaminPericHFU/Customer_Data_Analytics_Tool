@@ -115,50 +115,7 @@ elif plot_type == "Liniendiagramm":
 st.plotly_chart(fig, use_container_width=True)
 
 
-with tabs[3]:
-    st.header("📊 Interaktive Visualisierung")
-
-    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
-    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
-    hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
-
-    plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
-
-    color_arg = None if hue_col == "Keine" else hue_col
-
-    if plot_type == "Balkendiagramm":
-        fig = px.bar(df, x=x_col, y=y_col, color=color_arg)
-    elif plot_type == "Scatterplot":
-        fig = px.scatter(df, x=x_col, y=y_col, color=color_arg)
-    elif plot_type == "Liniendiagramm":
-        fig = px.line(df, x=x_col, y=y_col, color=color_arg)
-
-    st.plotly_chart(fig, use_container_width=True)
 
 
-
-
-
-
-with tabs[2]:  # Visualisierung
-    st.header("📊 Interaktive Visualisierung")
-
-    # Auswahl über Dropdown-Menüs
-    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"])
-    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"])
-    hue_col = st.selectbox("Gruppierung (Hue, optional):", ["Keine"] + column_classification["hue"])
-
-    # Art der Visualisierung auswählen
-    plot_type = st.radio("Diagrammtyp wählen:", ["Scatterplot", "Boxplot", "Lineplot"])
-
-    # Plot erstellen
-    fig, ax = plt.subplots()
-
-    if plot_type == "Scatterplot":
-        sns.scatterplot(data=df, x=x_col, y=y_col, hue=None if hue_col == "Keine" else hue_col, ax=ax)
-    elif plot_type == "Boxplot":
-        sns.boxplot(data=df, x=hue_col if hue_col != "Keine" else x_col, y=y_col, ax=ax)
-    elif plot_type == "Lineplot":
-        sns.lineplot(data=df, x=x_col, y=y_col, hue=None if hue_col == "Keine" else hue_col, ax=ax)
-
-    st.pyplot(fig)
+# ---------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------
