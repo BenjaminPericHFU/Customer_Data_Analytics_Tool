@@ -133,11 +133,11 @@ with tabs[2]:
     # Abschnitt: Lernarten
     st.subheader("📚 Supervised vs. Unsupervised Learning")
     st.markdown("""
-    Beim **Supervised Learning** werden Modelle mit bekannten Antworten bzw. Zielgrößen trainiert – beispielsweise unterscheidet man Kundendaten in „gekauft“ und „nicht gekauft“.  
+    Beim **Supervised Learning** werden Modelle mit bekannten Klassen und Zielgrößen trainiert – z.b. unterscheidet man Kundendaten in Kundengruppen von mit einer hohen und niedrigen Kaufhäufigkeit.  
     ➕ Es liegen also Daten **mit Labels** vor, die als Grundlage für Vorhersagen dienen.
 
     Beim **Unsupervised Learning** hingegen gibt es **keine vorgegebenen Klassen**.  
-    ➕ Ziel ist es, **Muster oder Strukturen** in den Daten selbstständig zu erkennen – etwa bei einem Datensatz mit Kundendaten, bei dem nicht bekannt ist, ob ein Kauf stattgefunden hat.
+    ➕ Ziel ist es, neue **Muster oder Strukturen** in den Daten selbstständig zu erkennen – etwa bei einem Datensatz mit Kundendaten, bei dem nicht bekannt ist, ob und wie viele Käufe stattgefunden haben.
     """)
 
     # Abschnitt: K-Means
@@ -158,12 +158,12 @@ with tabs[2]:
     **Erst durch eine anschließende Analyse** lässt sich einschätzen, was die einzelnen Gruppen inhaltlich verbindet.
 
     **Wie funktioniert der Algorithmus?**
-    1. Auswahl von K zufälligen Gruppenzentren  
-    2. Zuordnung jedes Punkts zum nächstgelegenen Zentrum  
+    1. Auswahl von K Gruppierungen (Clustern)  
+    2. Mathematische Zuordnung jedes Punkts zum nächstgelegenen Cluster-Zentrum  
     3. Neuberechnung der Gruppenzentren  
     4. Wiederholung, bis sich die Gruppenzugehörigkeiten nicht mehr ändern  
 
-    🧠 K-Means erkennt also **Strukturen in unbeschrifteten Daten**, ohne dass im Vorfeld definiert werden muss, welche Gruppen „sinnvoll“ wären.
+    🧠 K-Means erkennt dementsprechend **Strukturen in unbeschrifteten Daten**, ohne dass im Vorfeld definiert werden muss, welche konkreten Klassen vorliegen. 
     """)
 
     # Interaktives Beispiel
