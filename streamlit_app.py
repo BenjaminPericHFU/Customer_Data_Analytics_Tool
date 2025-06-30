@@ -143,8 +143,7 @@ with tabs[2]:
     # Abschnitt: K-Means
     st.subheader("🎯 Was ist K-Means Clustering?")
     st.markdown("""
-    K-Means ist ein einfacher Algorithmus, der Daten in eine vorher festgelegte Anzahl von **K Gruppen (Clustern)** unterteilt – und zwar so,  
-    dass sich die Einträge innerhalb einer Gruppe **möglichst ähnlich** sind.
+    K-Means ist ein einfacher Algorithmus, der Daten in eine vorher festgelegte Anzahl von **K Gruppen (Clustern)** unterteilt – und zwar so, dass sich die Einträge innerhalb einer Gruppe **möglichst ähnlich** sind.
 
     🔢 **Beispiel**: Ein Unternehmen verfügt über viele Kundendaten, aber keine Informationen über das Kaufverhalten.  
     K-Means kann helfen, automatisch Gruppierungen zu identifizieren, etwa:
