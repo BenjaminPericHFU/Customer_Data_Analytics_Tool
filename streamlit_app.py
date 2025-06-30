@@ -465,16 +465,19 @@ with tabs[5]:
                 ax.set_ylabel(col)
                 st.pyplot(fig)
 
-            # Mittelwerte je Cluster berechnen und anzeigen
-            group_means = df_cluster.groupby("cluster")[selected_columns].mean(numeric_only=True).round(3)
+        # Am Ende: Mittelwerte aller Spalten je Cluster (numerisch)
+        st.markdown("### Mittelwerte aller Spalten je Cluster")
+        
+        # Mittelwerte berechnen (nur numerische Spalten)
+        group_means_all = df_cluster.groupby("cluster").mean(numeric_only=True).round(3)
+        
+        # Fehlende Spalten mit '-' auffüllen (optional, falls nicht numerisch)
+        for col in df_cluster.columns:
+            if col not in group_means_all.columns and col != "cluster":
+                group_means_all[col] = "-"
+        
+        # Spalten sortieren wie im original DataFrame
+        group_means_all = group_means_all.reindex(columns=[col for col in df_cluster.columns if col != "cluster"])
+        
+        st.dataframe(group_means_all)
 
-            # Nicht-numerische Spalten mit "-" füllen, falls ausgewählt (optional)
-            for col in selected_columns:
-                if col not in group_means.columns:
-                    group_means[col] = "-"
-
-            # Um Sortierung und Vollständigkeit sicherzustellen:
-            group_means = group_means.reindex(columns=selected_columns)
-
-            st.markdown("### Mittelwerte der ausgewählten Spalten je Cluster")
-            st.dataframe(group_means)
