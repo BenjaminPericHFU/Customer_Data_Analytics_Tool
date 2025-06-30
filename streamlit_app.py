@@ -255,8 +255,8 @@ with tabs[3]:
         
         sigma_level = st.radio(
             label="**Wähle das Sigma-Level für die Ausreißer-Erkennung:**",
-            options=[2, 3, 6],
-            index=2,
+            options=[2, 3, 4, 5, 6],
+            index=1,  # entspricht Sigma = 3
             horizontal=True
         )
         
