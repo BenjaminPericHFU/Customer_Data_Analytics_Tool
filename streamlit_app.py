@@ -346,3 +346,24 @@ with tabs[3]:
                     ax.legend(by_label.values(), by_label.keys())
 
                     st.pyplot(fig)
+
+            st.markdown("---")
+            st.markdown("### 🧹 **Unnötige Spalten vor der Analyse ausschließen**")
+            
+            columns_to_exclude = st.multiselect(
+                label="Wähle Spalten aus, die **nicht** für die Ausreißer-Erkennung verwendet werden sollen:",
+                options=column_classification["xy"],
+                default=[],
+                help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
+            )
+
+
+
+
+
+
+
+
+
+
+
