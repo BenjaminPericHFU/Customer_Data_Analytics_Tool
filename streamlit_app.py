@@ -430,6 +430,8 @@ with tabs[4]:
         cols_order = ["cluster"] + [col for col in df_cluster.columns if col != "cluster"]
         st.markdown("### 🔍 Datensatz mit Cluster-Zuweisung:")
         st.dataframe(df_cluster[cols_order])
+        st.markdown(f"📋 **Datensatz enthält {df_cluster.shape[0]} Zeilen und {df_cluster.shape[1]} Spalten.**")
+
 
 
 
