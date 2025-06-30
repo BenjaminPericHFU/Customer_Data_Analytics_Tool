@@ -253,11 +253,11 @@ with tabs[3]:
         for col_name in column_classification["xy"]:
             c1, c2 = st.columns([1, 3])
             with c1:
-                checked = st.checkbox(col_name, value=True, key=f"chk_{col_name}")
+                checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")  # hier value=False
             with c2:
                 st.markdown(
-                    f"<div style='text-align: right; font-weight: bold;'>"
-                    f"Ausreißer in Spalte {col_name} (Six Sigma): {outlier_counts[col_name]}</div>",
+                    f"<div style='text-align: right;'>"
+                    f"Ausreißer in Spalte {col_name}: {outlier_counts[col_name]}</div>",
                     unsafe_allow_html=True,
                 )
             if checked:
@@ -307,7 +307,7 @@ with tabs[3]:
                 ax.set_yticks([1])
                 ax.set_yticklabels([""])
                 ax.set_xlabel(col)
-                ax.set_title(f"Ausreißererkennung für '{col}' (Six Sigma, {sigma_level}σ)")
+                ax.set_title(f"Ausreißererkennung für '{col}' ({sigma_level}σ)")
 
                 handles, labels = ax.get_legend_handles_labels()
                 by_label = dict(zip(labels, handles))
