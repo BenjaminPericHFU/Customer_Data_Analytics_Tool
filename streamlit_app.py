@@ -225,7 +225,6 @@ with tabs[2]:
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
-
 with tabs[3]:
     st.header("🔍 Autonome Ausreißer-Filterung mit Six Sigma Methode")
 
@@ -368,13 +367,12 @@ with tabs[3]:
 with tabs[4]:
     st.header("📊 K-Means Clustering & Gruppierte Visualisierung")
 
-    # Prüfen, ob df_filtered vorhanden ist
-    if 'df_filtered' not in st.session_state or st.session_state.df_filtered is None:
+    if df_filtered is None or df_filtered.empty:
         st.warning("Bitte lade und filtere zuerst die Daten im vorherigen Tab.")
     else:
-        df_cluster = st.session_state.df_filtered.copy()
+        df_cluster = df_filtered.copy()
 
-        # Slider zur Clusteranzahl
+        # Anzahl Cluster auswählen
         k = st.slider(
             "Wähle die Anzahl der Cluster (K)",
             min_value=1,
@@ -388,7 +386,7 @@ with tabs[4]:
             if df_cluster[col].dtype == "object" or df_cluster[col].dtype.name == "category":
                 df_cluster[col] = df_cluster[col].astype("category").cat.codes
 
-        # Nur numerische Spalten für Clustering verwenden
+        # Numerische Spalten für Clustering
         numeric_df = df_cluster.select_dtypes(include=["number"])
 
         # KMeans Clustering durchführen
@@ -396,18 +394,18 @@ with tabs[4]:
         model = KMeans(n_clusters=k, n_init="auto", random_state=42)
         df_cluster["cluster"] = model.fit_predict(numeric_df)
 
-        st.success(f"✅ Clustering abgeschlossen mit **{k} Clustern**.")
+        st.success(f"✅ Clustering mit **{k} Clustern** durchgeführt.")
 
-        # Spaltenauswahl für Visualisierung
+        # Spaltenauswahl zur Visualisierung
         st.markdown("### 📌 Wähle Spalten zur Visualisierung nach Cluster-Gruppen:")
         cols_to_plot = st.multiselect(
-            "Spaltenauswahl für Boxplots",
+            "Spalten für Boxplots",
             options=numeric_df.columns.tolist(),
             default=numeric_df.columns[:3].tolist() if len(numeric_df.columns) >= 3 else numeric_df.columns.tolist(),
             key="kmeans_multiselect_cols"
         )
 
-        # Visualisierung der Boxplots
+        # Boxplots je Cluster
         import matplotlib.pyplot as plt
         import seaborn as sns
 
@@ -418,7 +416,7 @@ with tabs[4]:
             ax.set_title(f"Verteilung von '{col}' nach Cluster")
             st.pyplot(fig)
 
-        # Vorschau: DataFrame mit Cluster-Zuweisung
+        # Vorschau mit Cluster-Labels
         st.markdown("### 🔍 Datensatz mit Cluster-Zuweisung:")
         st.dataframe(df_cluster.head())
 
