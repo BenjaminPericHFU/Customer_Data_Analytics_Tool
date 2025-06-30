@@ -239,7 +239,7 @@ with tabs[3]:
         selected_columns = []
         outlier_counts = {}
 
-        # Erstmal Ausreißeranzahl pro Spalte ermitteln
+        # Ausreißeranzahl pro Spalte berechnen
         for col in column_classification["xy"]:
             mean = df_work[col].mean()
             std = df_work[col].std()
@@ -249,15 +249,17 @@ with tabs[3]:
             mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
             outlier_counts[col] = mask_outliers.sum()
 
-        # Zwei Spalten Layout für Checkboxen und Ausreißeranzahl
-        col_checkbox, col_count = st.columns([3, 1])
-
+        # Für jede Spalte eine einzelne Zeile mit Checkbox links und Text rechts
         for col_name in column_classification["xy"]:
-            with col_checkbox:
-                checked = st.checkbox(f"{col_name}", value=True, key=f"chk_{col_name}")
-            with col_count:
-                st.markdown(f"<div style='text-align: right; font-weight: bold;'>{outlier_counts[col_name]}</div>", unsafe_allow_html=True)
-
+            c1, c2 = st.columns([1, 3])
+            with c1:
+                checked = st.checkbox(col_name, value=True, key=f"chk_{col_name}")
+            with c2:
+                st.markdown(
+                    f"<div style='text-align: right; font-weight: bold;'>"
+                    f"Ausreißer in Spalte {col_name} (Six Sigma): {outlier_counts[col_name]}</div>",
+                    unsafe_allow_html=True,
+                )
             if checked:
                 selected_columns.append(col_name)
 
@@ -312,7 +314,6 @@ with tabs[3]:
                 ax.legend(by_label.values(), by_label.keys())
 
                 st.pyplot(fig)
-
 
 
 
