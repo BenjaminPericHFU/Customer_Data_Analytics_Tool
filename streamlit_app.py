@@ -254,7 +254,7 @@ with tabs[3]:
         st.markdown("Wähle das Sigma-Level für die Ausreißer-Erkennung:")
         
         sigma_level = st.radio(
-            
+            label="**Wähle das Sigma-Level für die Ausreißer-Erkennung:**",
             options=[2, 3, 6],
             index=2,
             horizontal=True
