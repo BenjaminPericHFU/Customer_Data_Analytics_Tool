@@ -57,7 +57,6 @@ with tabs[0]:
         df_work = df_work.dropna()
         st.divider()
         st.subheader("Datensatz als Tabelle:")
-        max_cols = min(n_cols, len(df_work.columns))
         st.dataframe(df_work)
         st.divider()
         st.subheader("Statistik zu Datensatz:")
