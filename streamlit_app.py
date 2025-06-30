@@ -132,43 +132,48 @@ with tabs[2]:
     # Abschnitt: Lernarten
     st.subheader("📚 Supervised vs. Unsupervised Learning")
     st.markdown("""
-    Beim **Supervised Learning** lernst du mit bekannten Antworten – z. B. ob ein Kunde gekauft hat.  
-    ➕ Du hast Daten **mit Labels** und trainierst ein Modell, um Vorhersagen zu treffen.
+    Beim **Supervised Learning** werden Modelle mit bekannten Antworten bzw. Zielgrößen trainiert – beispielsweise unterscheidet man Kundendaten in „gekauft“ und „nicht gekauft“.  
+    ➕ Es liegen also Daten **mit Labels** vor, die als Grundlage für Vorhersagen dienen.
 
-    Beim **Unsupervised Learning** gibt es **keine vorgegebenen Antworten**.  
-    ➕ Das Ziel ist, **Muster oder Gruppen** in den Daten selbstständig zu entdecken.
+    Beim **Unsupervised Learning** hingegen gibt es **keine vorgegebenen Klassen**.  
+    ➕ Ziel ist es, **Muster oder Strukturen** in den Daten selbstständig zu erkennen – etwa bei einem Datensatz mit Kundendaten, bei dem nicht bekannt ist, ob ein Kauf stattgefunden hat.
     """)
 
     # Abschnitt: K-Means
     st.subheader("🎯 Was ist K-Means Clustering?")
     st.markdown("""
-    K-Means ist ein einfacher Algorithmus, der versucht, Daten in **K Gruppen** zu unterteilen – so,  
-    dass Punkte innerhalb einer Gruppe **möglichst ähnlich** sind.
+    K-Means ist ein einfacher Algorithmus, der Daten in eine vorher festgelegte Anzahl von **K Gruppen (Clustern)** unterteilt – und zwar so,  
+    dass sich die Einträge innerhalb einer Gruppe **möglichst ähnlich** sind.
 
-    🔢 **Beispiel**: Du hast viele Kunden, aber keine Infos über deren Verhalten.  
-    K-Means hilft dir, sie automatisch in Gruppen einzuteilen, etwa:
-    - Kunden, die viel kaufen
-    - Kunden, die selten kommen
-    - Gelegenheitskäufer
+    🔢 **Beispiel**: Ein Unternehmen verfügt über viele Kundendaten, aber keine Informationen über das Kaufverhalten.  
+    K-Means kann helfen, automatisch Gruppierungen zu identifizieren, etwa:
+    - Kunden, die viel kaufen  
+    - Kunden, die selten kommen  
+    - Gelegenheitskäufer  
 
-    **Wie funktioniert das?**
-    1. Wähle K zufällige Gruppenzentren
-    2. Ordne alle Punkte dem nächstgelegenen Zentrum zu
-    3. Berechne neue Gruppenzentren
-    4. Wiederhole, bis sich die Gruppen nicht mehr ändern
+    💡 **Wichtig**: Welche Gruppierungen tatsächlich entstehen, ist **zuvor nicht bekannt**.  
+    Der Algorithmus nutzt ausschließlich **mathematische Ähnlichkeiten** zwischen Datenpunkten – die daraus resultierenden Gruppen können sehr unterschiedlich ausfallen.  
+    Es könnten durchaus die oben genannten Kundentypen sein, **aber auch ganz andere Strukturen**: z. B. eine Trennung nach Alter, Körpergröße oder Wohnregion.  
+    **Erst durch eine anschließende Analyse** lässt sich einschätzen, was die einzelnen Gruppen inhaltlich verbindet.
 
-    🧠 Der Algorithmus findet also **Strukturen in unbeschrifteten Daten** – ohne dass du ihm sagen musst, wie viele Gruppen es „wirklich“ gibt.
+    **Wie funktioniert der Algorithmus?**
+    1. Auswahl von K zufälligen Gruppenzentren  
+    2. Zuordnung jedes Punkts zum nächstgelegenen Zentrum  
+    3. Neuberechnung der Gruppenzentren  
+    4. Wiederholung, bis sich die Gruppenzugehörigkeiten nicht mehr ändern  
+
+    🧠 K-Means erkennt also **Strukturen in unbeschrifteten Daten**, ohne dass im Vorfeld definiert werden muss, welche Gruppen „sinnvoll“ wären.
     """)
 
     # Interaktives Beispiel
-    st.subheader("🧪 Probiere es selbst aus")
+    st.subheader("🧪 Probieren Sie es selbst aus")
 
     from sklearn.datasets import make_blobs
     from sklearn.cluster import KMeans
     import matplotlib.pyplot as plt
     import numpy as np
 
-    k = st.slider("Wähle die Anzahl der Cluster (K)", min_value=1, max_value=6, value=3, key="kmeans_slider")
+    k = st.slider("Wählen Sie die Anzahl der Cluster (K)", min_value=1, max_value=6, value=3, key="kmeans_slider")
 
     X, _ = make_blobs(n_samples=300, centers=4, cluster_std=1.0, random_state=42)
     kmeans = KMeans(n_clusters=k, n_init="auto", random_state=42)
@@ -191,27 +196,27 @@ with tabs[2]:
 
     st.markdown("""
     **Vorteile:**
-    - Einfach zu verstehen
-    - Schnell bei großen Datenmengen
-    - Gut, wenn Gruppen „rund“ verteilt sind
+    - Intuitiv und einfach zu implementieren  
+    - Schnell und effizient auch bei großen Datensätzen  
+    - Funktioniert gut bei klar voneinander trennbaren, runden Gruppen  
 
     **Grenzen:**
-    - Du musst K vorher angeben
-    - Funktioniert schlechter bei unregelmäßigen Gruppen
-    - Reagiert empfindlich auf Ausreißer
+    - Die Anzahl der Cluster (K) muss im Voraus gewählt werden  
+    - Schwächen bei unregelmäßig geformten oder unterschiedlich großen Gruppen  
+    - Anfällig gegenüber Ausreißern  
     """)
 
     # Fazit
     st.subheader("🧩 Fazit")
     st.markdown("""
-    K-Means ist ein **leicht verständlicher Einstieg** ins Clustering und ideal,  
-    um **verborgene Strukturen** in unbeschrifteten Daten sichtbar zu machen.
+    K-Means ist ein **anschaulicher und leistungsfähiger Einstieg** in das unüberwachte Lernen – besonders dann,  
+    wenn es darum geht, **verborgene Strukturen** in umfangreichen, unbeschrifteten Datensätzen sichtbar zu machen.
 
-    📊 Besonders nützlich in Bereichen wie Kundensegmentierung, Produktempfehlung oder Marktforschung.
+    📊 Anwendungsgebiete sind unter anderem Kundensegmentierung, Produktempfehlungen oder explorative Datenanalysen in der Marktforschung.
     """)
 
-    st.success("🎉 Tipp: Bewege den Schieberegler oben, um zu sehen, wie sich die Gruppierung verändert.")
-    
+    st.success("🎉 Tipp: Bewegen Sie den Schieberegler oben, um zu sehen, wie sich die Gruppierung verändert.")
+
     st.divider()
     st.video("https://www.youtube.com/watch?v=4b5d3muPQmA&t=33s")
 
