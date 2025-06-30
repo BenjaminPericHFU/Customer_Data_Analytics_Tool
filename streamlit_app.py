@@ -487,6 +487,8 @@ with tabs[5]:
         
         st.divider()
         
+        st.markdown("### Datensatz mit Cluster-Gruppierungen downloaden")
+        
         csv_data = df_cluster.to_csv(index=False).encode('utf-8')
         st.download_button(
             label="Cluster-Daten als CSV herunterladen",
