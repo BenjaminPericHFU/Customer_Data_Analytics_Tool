@@ -392,7 +392,10 @@ with tabs[4]:
         # KMeans Clustering durchführen
         from sklearn.cluster import KMeans
         model = KMeans(n_clusters=k, n_init="auto", random_state=42)
-        df_cluster["cluster"] = model.fit_predict(numeric_df)
+        clusters = model.fit_predict(numeric_df)
+
+        # Cluster als erste Spalte hinzufügen
+        df_cluster.insert(0, "cluster", clusters)
 
         st.success(f"✅ Clustering mit **{k} Clustern** durchgeführt.")
 
