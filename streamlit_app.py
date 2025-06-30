@@ -227,19 +227,39 @@ with tabs[2]:
 # ---------------------------------------------------------------------------------------------------
 
 with tabs[3]:
-    st.header("🔍 Automatisierte Ausreißererkennung & Filterung mit Kontroll-Checkliste")
+    st.header("🔍 Ausreißer-Erkennung mit Six Sigma Kontrolle")
 
     if df_work is None:
         st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
     else:
-        st.markdown("Wähle die Spalten aus, für die die Six Sigma Ausreißer-Filterung aktiviert werden soll:")
-        
-        # Checkboxen für alle numerischen Spalten mit vielen eindeutigen Werten
+        sigma_level = st.radio("Wähle das Sigma-Level für die Ausreißer-Erkennung:", options=[2, 3, 6], index=2, horizontal=True)
+
+        st.markdown("### Spalten auswählen, bei denen die automatische Six Sigma Filterung angewandt wird:")
+
         selected_columns = []
+        outlier_counts = {}
+
+        # Erstmal Ausreißeranzahl pro Spalte ermitteln
         for col in column_classification["xy"]:
-            checked = st.checkbox(f"Six Sigma Filterung für '{col}' aktivieren", value=True)
+            mean = df_work[col].mean()
+            std = df_work[col].std()
+            lower_bound = mean - sigma_level * std
+            upper_bound = mean + sigma_level * std
+
+            mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
+            outlier_counts[col] = mask_outliers.sum()
+
+        # Zwei Spalten Layout für Checkboxen und Ausreißeranzahl
+        col_checkbox, col_count = st.columns([3, 1])
+
+        for col_name in column_classification["xy"]:
+            with col_checkbox:
+                checked = st.checkbox(f"{col_name}", value=True, key=f"chk_{col_name}")
+            with col_count:
+                st.markdown(f"<div style='text-align: right; font-weight: bold;'>{outlier_counts[col_name]}</div>", unsafe_allow_html=True)
+
             if checked:
-                selected_columns.append(col)
+                selected_columns.append(col_name)
 
         if len(selected_columns) == 0:
             st.info("Bitte mindestens eine Spalte auswählen.")
@@ -251,49 +271,47 @@ with tabs[3]:
             for col in selected_columns:
                 mean = df_filtered[col].mean()
                 std = df_filtered[col].std()
-                lower_bound_sigma = mean - 6 * std
-                upper_bound_sigma = mean + 6 * std
+                lower_bound = mean - sigma_level * std
+                upper_bound = mean + sigma_level * std
 
-                mask_outliers_sigma = (df_filtered[col] < lower_bound_sigma) | (df_filtered[col] > upper_bound_sigma)
-                outlier_idx_col = df_filtered[mask_outliers_sigma].index
+                mask_outliers = (df_filtered[col] < lower_bound) | (df_filtered[col] > upper_bound)
+                outlier_idx_col = df_filtered[mask_outliers].index
 
                 if len(outlier_idx_col) > 0:
-                    st.write(f"Ausreißer in Spalte **{col}** (Six Sigma): {len(outlier_idx_col)}")
                     outlier_indices.update(outlier_idx_col)
                     cols_with_outliers.append(col)
 
-            st.write(f"Gesamtzahl eindeutiger Ausreißer (über alle ausgewählten Spalten): {len(outlier_indices)}")
+            st.write(f"**Gesamtzahl eindeutiger Ausreißer (über alle ausgewählten Spalten): {len(outlier_indices)}**")
             df_filtered = df_filtered.drop(index=outlier_indices)
             st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_filtered)} Zeilen statt {len(df_work)}")
 
-            # Visualisierung der ausgewählten Spalten mit Ausreißer-Markierung
+            # Visualisierung der Spalten mit Ausreißern
             st.subheader("Scatterplots mit Ausreißer-Markierung (y=1)")
 
             for col in cols_with_outliers:
                 mean = df_work[col].mean()
                 std = df_work[col].std()
-                lower_bound_sigma = mean - 6 * std
-                upper_bound_sigma = mean + 6 * std
+                lower_bound = mean - sigma_level * std
+                upper_bound = mean + sigma_level * std
 
-                mask_outliers_sigma = (df_work[col] < lower_bound_sigma) | (df_work[col] > upper_bound_sigma)
+                mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
 
                 fig, ax = plt.subplots(figsize=(8, 2))
-                ax.scatter(df_work.loc[~mask_outliers_sigma, col], [1]*sum(~mask_outliers_sigma),
+                ax.scatter(df_work.loc[~mask_outliers, col], [1]*sum(~mask_outliers),
                            color="blue", label="Normal", alpha=0.6)
-                ax.scatter(df_work.loc[mask_outliers_sigma, col], [1]*sum(mask_outliers_sigma),
+                ax.scatter(df_work.loc[mask_outliers, col], [1]*sum(mask_outliers),
                            color="red", label="Ausreißer", alpha=0.8)
 
                 ax.set_yticks([1])
                 ax.set_yticklabels([""])
                 ax.set_xlabel(col)
-                ax.set_title(f"Ausreißererkennung für '{col}' (Six Sigma)")
+                ax.set_title(f"Ausreißererkennung für '{col}' (Six Sigma, {sigma_level}σ)")
 
                 handles, labels = ax.get_legend_handles_labels()
                 by_label = dict(zip(labels, handles))
                 ax.legend(by_label.values(), by_label.keys())
 
                 st.pyplot(fig)
-
 
 
 
