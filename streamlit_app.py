@@ -436,12 +436,12 @@ with tabs[4]:
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[5]:
-    st.header("📊 Boxplot-Visualisierung der Cluster für ausgewählte Spalten")
+    st.header("📊 Boxplot-Visualisierung der Cluster")
 
     if df_cluster is None or "cluster" not in df_cluster.columns:
         st.warning("Bitte lade zuerst einen Datensatz mit der Spalte 'cluster' hoch oder führe die Clusteranalyse aus.")
     else:
-        st.markdown("### Spalten für Boxplots auswählen (jeweils gruppiert nach 'cluster'):")
+        st.markdown("### Spalten zur Visualisierung auswählen:")
         selected_columns = st.multiselect(
             label="Wähle eine oder mehrere Spalten (XY-Werte) für Boxplots:",
             options=column_classification["xy"],
@@ -452,7 +452,7 @@ with tabs[5]:
             st.info("Bitte wähle mindestens eine Spalte aus, um Boxplots zu sehen.")
         else:
             for col in selected_columns:
-                st.subheader(f"Boxplot für {col} gruppiert nach Cluster")
+                st.subheader(f"Boxplot für {col} ")
                 fig, ax = plt.subplots(figsize=(8, 4))
                 sns.boxplot(
                     data=df_cluster,
