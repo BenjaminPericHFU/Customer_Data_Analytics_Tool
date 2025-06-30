@@ -250,9 +250,11 @@ with tabs[3]:
               🛡️ **Sehr lockerer Filter** – Nur sehr extreme Ausreißer werden erkannt, alles, was sich leicht unterscheidet, bleibt drin.  
               🧘‍♂️ Ideal, wenn du nur ganz große Ausreißer entfernen möchtest.
             """, unsafe_allow_html=True)
+
+        st.markdown("Wähle das Sigma-Level für die Ausreißer-Erkennung:")
         
         sigma_level = st.radio(
-            "Wähle das Sigma-Level für die Ausreißer-Erkennung:",
+            
             options=[2, 3, 6],
             index=2,
             horizontal=True
