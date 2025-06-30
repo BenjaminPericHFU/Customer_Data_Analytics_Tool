@@ -452,15 +452,29 @@ with tabs[5]:
             st.info("Bitte wähle mindestens eine Spalte aus, um Boxplots zu sehen.")
         else:
             for col in selected_columns:
-                st.subheader(f"Boxplot für {col} ")
+                st.subheader(f"Boxplot für {col}")
                 fig, ax = plt.subplots(figsize=(8, 4))
                 sns.boxplot(
                     data=df_cluster,
                     x="cluster",
                     y=col,
                     ax=ax,
-                    palette="Set2"  # Farbpalette für Cluster-Gruppen
+                    palette="Set2"
                 )
                 ax.set_xlabel("Cluster")
                 ax.set_ylabel(col)
                 st.pyplot(fig)
+
+            # Mittelwerte je Cluster berechnen und anzeigen
+            group_means = df_cluster.groupby("cluster")[selected_columns].mean(numeric_only=True).round(3)
+
+            # Nicht-numerische Spalten mit "-" füllen, falls ausgewählt (optional)
+            for col in selected_columns:
+                if col not in group_means.columns:
+                    group_means[col] = "-"
+
+            # Um Sortierung und Vollständigkeit sicherzustellen:
+            group_means = group_means.reindex(columns=selected_columns)
+
+            st.markdown("### Mittelwerte der ausgewählten Spalten je Cluster")
+            st.dataframe(group_means)
