@@ -13,9 +13,11 @@ st.set_page_config(page_title="Meine App", layout="wide")
 st.markdown("""
     <style>
         .main {
-            max-width: 1000px;
+            max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
     </style>
 """, unsafe_allow_html=True)
