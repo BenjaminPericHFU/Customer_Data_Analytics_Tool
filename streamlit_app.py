@@ -438,8 +438,8 @@ with tabs[4]:
 with tabs[5]:
     st.header("📊 Boxplot-Visualisierung der Cluster für ausgewählte Spalten")
 
-    if df_work is None:
-        st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
+    if df_cluster is None:
+        st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch oder führe die Clusteranalyse aus.")
     else:
         st.markdown("### Spalten für Boxplots auswählen:")
         selected_columns = st.multiselect(
@@ -448,22 +448,20 @@ with tabs[5]:
             default=[]
         )
 
-        # Prüfe, ob mindestens eine Spalte ausgewählt wurde
         if len(selected_columns) == 0:
             st.info("Bitte wähle mindestens eine Spalte aus, um Boxplots zu sehen.")
-            df_auswertung = df_work.copy()
+            df_auswertung = df_cluster.copy()
         else:
-            # Neue DataFrame für Auswertung mit nur ausgewählten Spalten
-            df_auswertung = df_work[selected_columns].copy()
+            df_auswertung = df_cluster[selected_columns].copy()
 
             st.markdown(f"Boxplots für die ausgewählten Spalten: {', '.join(selected_columns)}")
-            
+
             for col in selected_columns:
                 fig, ax = plt.subplots(figsize=(6, 4))
                 sns.boxplot(data=df_auswertung, y=col, ax=ax)
                 ax.set_title(f"Boxplot für {col}")
                 st.pyplot(fig)
-        
+
         st.markdown("---")
         st.markdown("### Erweiterter Boxplot mit Auswahl von X, Y und Gruppierung")
 
@@ -472,27 +470,14 @@ with tabs[5]:
         hue_options = ["Keine"] + column_classification.get("hue", [])
         hue_col = st.selectbox("Farbliche Gruppierung (optional):", hue_options, key="hue_tab5")
 
-        # Prüfen, ob x_col und y_col verschieden sind
         if x_col == y_col:
             st.warning("Bitte wähle unterschiedliche Spalten für X- und Y-Achse.")
         else:
             fig, ax = plt.subplots(figsize=(8, 5))
-
             if hue_col != "Keine":
-                sns.boxplot(data=df_work, x=x_col, y=y_col, hue=hue_col, ax=ax)
+                sns.boxplot(data=df_cluster, x=x_col, y=y_col, hue=hue_col, ax=ax)
             else:
-                sns.boxplot(data=df_work, x=x_col, y=y_col, ax=ax)
+                sns.boxplot(data=df_cluster, x=x_col, y=y_col, ax=ax)
 
             ax.set_title(f"Boxplot von {y_col} vs {x_col}" + (f" gruppiert nach {hue_col}" if hue_col != "Keine" else ""))
             st.pyplot(fig)
-
-
-
-
-
-
-
-
-
-
-
