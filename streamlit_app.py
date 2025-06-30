@@ -356,6 +356,12 @@ with tabs[3]:
                 default=[],
                 help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
             )
+            
+            # Entferne die ausgewählten Spalten aus df_filtered
+            df_filtered = df_filtered.drop(columns=columns_to_exclude)
+            
+            st.markdown("### 📊 Vorschau des bereinigten Datensatzes")
+            st.dataframe(df_filtered.iloc[:, :].head())
 
 
 
