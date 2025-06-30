@@ -250,8 +250,6 @@ with tabs[3]:
               🧘‍♂️ Ideal, wenn du nur ganz große Ausreißer entfernen möchtest.
             """, unsafe_allow_html=True)
 
-        st.markdown("Wähle das Sigma-Level für die Ausreißer-Erkennung:")
-        
         sigma_level = st.radio(
             label="**Wähle das Sigma-Level für die Ausreißer-Erkennung:**",
             options=[2, 3, 4, 5, 6],
@@ -266,7 +264,7 @@ with tabs[3]:
         selected_columns = []
 
         for col_name in column_classification["xy"]:
-            c1, c2 = st.columns([3, 2])  # Checkbox links, Text rechts
+            c1, c2 = st.columns([3, 2])
 
             with c1:
                 checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")
@@ -293,8 +291,10 @@ with tabs[3]:
             if checked:
                 selected_columns.append(col_name)
 
+        # Falls keine Spalten ausgewählt wurden, setze df_filtered = df_work.copy()
         if len(selected_columns) == 0:
             st.info("Visualisierungen sind zu sehen, sobald eine Spalte ausgewählt wird.")
+            df_filtered = df_work.copy()
         else:
             df_filtered = df_work.copy()
             outlier_indices = set()
@@ -328,7 +328,7 @@ with tabs[3]:
 
                 mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
 
-                if mask_outliers.any():  # Nur plotten, wenn Ausreißer vorhanden
+                if mask_outliers.any():
                     fig, ax = plt.subplots(figsize=(8, 2))
                     ax.scatter(df_work.loc[~mask_outliers, col], [1]*sum(~mask_outliers),
                                color="blue", label="Normal", alpha=0.6)
@@ -346,21 +346,20 @@ with tabs[3]:
 
                     st.pyplot(fig)
 
-            st.markdown("---")
-            st.markdown("### 🧹 **Irrelevante Spalten vor der Analyse ausschließen**")
-            
-            columns_to_exclude = st.multiselect(
-                label="Wähle Sie Spalten aus, die **irrelevant** für die Ausreißer-Erkennung sind:",
-                options=df_filtered.columns.tolist(),
-                default=[],
-                help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
-            )
-            
-            # Entferne die ausgewählten Spalten aus df_filtered
-            df_filtered = df_filtered.drop(columns=columns_to_exclude)
-            
-            st.markdown("### 📊 Vorschau des bereinigten Datensatzes")
-            st.dataframe(df_filtered.iloc[:, :].head())
+        st.markdown("---")
+        st.markdown("### 🧹 **Irrelevante Spalten vor der Analyse ausschließen**")
+        
+        columns_to_exclude = st.multiselect(
+            label="Wähle Sie Spalten aus, die **irrelevant** für die Ausreißer-Erkennung sind:",
+            options=df_filtered.columns.tolist(),
+            default=[],
+            help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
+        )
+        
+        df_filtered = df_filtered.drop(columns=columns_to_exclude)
+        
+        st.markdown("### 📊 Vorschau des bereinigten Datensatzes")
+        st.dataframe(df_filtered.head())
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
