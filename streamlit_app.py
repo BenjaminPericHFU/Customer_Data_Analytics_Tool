@@ -318,7 +318,7 @@ with tabs[3]:
             st.divider()
 
             # Visualisierung der ausgewählten Spalten mit Ausreißern
-            st.subheader("Scatterplots mit Ausreißer-Markierung (y=1)")
+            st.subheader("Scatterplots mit Ausreißer-Markierung")
 
             for col in selected_columns:
                 mean = df_work[col].mean()
