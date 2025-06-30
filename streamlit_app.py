@@ -427,6 +427,7 @@ with tabs[4]:
         st.plotly_chart(fig, use_container_width=True)
 
         # Datensatz mit Cluster-Zuweisung anzeigen, Cluster als erste Spalte
+        df_cluster = df_cluster.reset_index(drop=True)
         cols_order = ["cluster"] + [col for col in df_cluster.columns if col != "cluster"]
         st.markdown("### 🔍 Datensatz mit Cluster-Zuweisung:")
         st.dataframe(df_cluster[cols_order])
