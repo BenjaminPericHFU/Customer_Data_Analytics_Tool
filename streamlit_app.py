@@ -372,7 +372,7 @@ with tabs[4]:
         st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
     else:
         # Cluster-Anzahl
-        k = st.slider("Wähle die Anzahl der Cluster (K)", min_value=1, max_value=6, value=3, key="kmeans_slider")
+        k = st.slider("Wähle die Anzahl der Cluster (K)", min_value=1, max_value=6, value=3, key="kmeans_slider_tab4")
 
         # Arbeitskopie des DataFrames
         df_cluster = df_work.copy()
