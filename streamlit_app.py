@@ -227,87 +227,72 @@ with tabs[2]:
 # ---------------------------------------------------------------------------------------------------
 
 with tabs[3]:
-    st.header("🔍 Automatisierte Ausreißererkennung & Filterung (Boxplot + Sigma-Methode)")
+    st.header("🔍 Automatisierte Ausreißererkennung & Filterung mit Kontroll-Checkliste")
 
     if df_work is None:
         st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
     else:
-        df_filtered = df_work.copy()
-        outlier_indices = set()
-        cols_with_outliers = []
-
+        st.markdown("Wähle die Spalten aus, für die die Six Sigma Ausreißer-Filterung aktiviert werden soll:")
+        
+        # Checkboxen für alle numerischen Spalten mit vielen eindeutigen Werten
+        selected_columns = []
         for col in column_classification["xy"]:
-            # IQR-Methode (Boxplot)
-            Q1 = df_filtered[col].quantile(0.25)
-            Q3 = df_filtered[col].quantile(0.75)
-            IQR = Q3 - Q1
-            lower_bound_iqr = Q1 - 1.5 * IQR
-            upper_bound_iqr = Q3 + 1.5 * IQR
+            checked = st.checkbox(f"Six Sigma Filterung für '{col}' aktivieren", value=True)
+            if checked:
+                selected_columns.append(col)
 
-            # Sigma-Methode (±6 Stdabw)
-            mean = df_filtered[col].mean()
-            std = df_filtered[col].std()
-            lower_bound_sigma = mean - 6 * std
-            upper_bound_sigma = mean + 6 * std
+        if len(selected_columns) == 0:
+            st.info("Bitte mindestens eine Spalte auswählen.")
+        else:
+            df_filtered = df_work.copy()
+            outlier_indices = set()
+            cols_with_outliers = []
 
-            # Kombinierte Maske: Ausreißer bei Boxplot ODER Sigma-Methode
-            mask_outliers_iqr = (df_filtered[col] < lower_bound_iqr) | (df_filtered[col] > upper_bound_iqr)
-            mask_outliers_sigma = (df_filtered[col] < lower_bound_sigma) | (df_filtered[col] > upper_bound_sigma)
-            mask_outliers = mask_outliers_iqr | mask_outliers_sigma
+            for col in selected_columns:
+                mean = df_filtered[col].mean()
+                std = df_filtered[col].std()
+                lower_bound_sigma = mean - 6 * std
+                upper_bound_sigma = mean + 6 * std
 
-            outlier_idx_col = df_filtered[mask_outliers].index
+                mask_outliers_sigma = (df_filtered[col] < lower_bound_sigma) | (df_filtered[col] > upper_bound_sigma)
+                outlier_idx_col = df_filtered[mask_outliers_sigma].index
 
-            if len(outlier_idx_col) > 0:
-                st.write(f"Ausreißer in Spalte **{col}**: {len(outlier_idx_col)}")
-                outlier_indices.update(outlier_idx_col)
-                cols_with_outliers.append(col)
+                if len(outlier_idx_col) > 0:
+                    st.write(f"Ausreißer in Spalte **{col}** (Six Sigma): {len(outlier_idx_col)}")
+                    outlier_indices.update(outlier_idx_col)
+                    cols_with_outliers.append(col)
 
-        # DataFrame ohne alle Ausreißer aus allen Spalten filtern
-        st.write(f"Gesamtzahl der eindeutigen Ausreißer (über alle Spalten): {len(outlier_indices)}")
-        df_filtered = df_filtered.drop(index=outlier_indices)
-        st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_filtered)} Zeilen statt {len(df_work)}")
+            st.write(f"Gesamtzahl eindeutiger Ausreißer (über alle ausgewählten Spalten): {len(outlier_indices)}")
+            df_filtered = df_filtered.drop(index=outlier_indices)
+            st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_filtered)} Zeilen statt {len(df_work)}")
 
-        # Visualisierung (wie gehabt) mit dem neuen gefilterten DataFrame
-        st.subheader("Scatterplots mit Ausreißer-Markierung (y=1)")
+            # Visualisierung der ausgewählten Spalten mit Ausreißer-Markierung
+            st.subheader("Scatterplots mit Ausreißer-Markierung (y=1)")
 
-        for col in cols_with_outliers:
-            # Recalculate Grenzen für Visualisierung (mit IQR + Sigma)
-            Q1 = df_work[col].quantile(0.25)
-            Q3 = df_work[col].quantile(0.75)
-            IQR = Q3 - Q1
-            lower_bound_iqr = Q1 - 1.5 * IQR
-            upper_bound_iqr = Q3 + 1.5 * IQR
+            for col in cols_with_outliers:
+                mean = df_work[col].mean()
+                std = df_work[col].std()
+                lower_bound_sigma = mean - 6 * std
+                upper_bound_sigma = mean + 6 * std
 
-            mean = df_work[col].mean()
-            std = df_work[col].std()
-            lower_bound_sigma = mean - 6 * std
-            upper_bound_sigma = mean + 6 * std
+                mask_outliers_sigma = (df_work[col] < lower_bound_sigma) | (df_work[col] > upper_bound_sigma)
 
-            # Ausreißer basierend auf beiden Methoden
-            mask_outliers_iqr = (df_work[col] < lower_bound_iqr) | (df_work[col] > upper_bound_iqr)
-            mask_outliers_sigma = (df_work[col] < lower_bound_sigma) | (df_work[col] > upper_bound_sigma)
-            mask_outliers = mask_outliers_iqr | mask_outliers_sigma
+                fig, ax = plt.subplots(figsize=(8, 2))
+                ax.scatter(df_work.loc[~mask_outliers_sigma, col], [1]*sum(~mask_outliers_sigma),
+                           color="blue", label="Normal", alpha=0.6)
+                ax.scatter(df_work.loc[mask_outliers_sigma, col], [1]*sum(mask_outliers_sigma),
+                           color="red", label="Ausreißer", alpha=0.8)
 
-            fig, ax = plt.subplots(figsize=(8, 2))
+                ax.set_yticks([1])
+                ax.set_yticklabels([""])
+                ax.set_xlabel(col)
+                ax.set_title(f"Ausreißererkennung für '{col}' (Six Sigma)")
 
-            # Normale Werte blau
-            ax.scatter(df_work.loc[~mask_outliers, col], [1]*sum(~mask_outliers),
-                       color="blue", label="Normal", alpha=0.6)
+                handles, labels = ax.get_legend_handles_labels()
+                by_label = dict(zip(labels, handles))
+                ax.legend(by_label.values(), by_label.keys())
 
-            # Ausreißer rot
-            ax.scatter(df_work.loc[mask_outliers, col], [1]*sum(mask_outliers),
-                       color="red", label="Ausreißer", alpha=0.8)
-
-            ax.set_yticks([1])
-            ax.set_yticklabels([""])
-            ax.set_xlabel(col)
-            ax.set_title(f"Ausreißererkennung für '{col}' (Boxplot + Sigma)")
-
-            handles, labels = ax.get_legend_handles_labels()
-            by_label = dict(zip(labels, handles))
-            ax.legend(by_label.values(), by_label.keys())
-
-            st.pyplot(fig)
+                st.pyplot(fig)
 
 
 
