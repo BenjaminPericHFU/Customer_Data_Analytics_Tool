@@ -351,7 +351,7 @@ with tabs[3]:
             st.markdown("### 🧹 **Irrelevante Spalten vor der Analyse ausschließen**")
             
             columns_to_exclude = st.multiselect(
-                label="Wähle Spalten aus, die **nicht** für die Ausreißer-Erkennung verwendet werden sollen:",
+                label="Wähle Sie Spalten aus, die **irrelevant** für die Ausreißer-Erkennung sind:",
                 options=column_classification["xy"],
                 default=[],
                 help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
