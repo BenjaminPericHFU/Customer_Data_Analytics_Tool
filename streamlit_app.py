@@ -395,7 +395,7 @@ with tabs[4]:
         clusters = model.fit_predict(numeric_df)
 
         # Cluster als erste Spalte hinzufügen
-        df_cluster.insert(0, "cluster", clusters)
+        df_cluster.insert(0, "cluster", clusters.astype(str))  # als str für bessere Plotly-Farbgebung
 
         st.success(f"✅ Clustering mit **{k} Clustern** durchgeführt.")
 
@@ -408,16 +408,13 @@ with tabs[4]:
             key="kmeans_multiselect_cols"
         )
 
-        # Boxplots je Cluster
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-
+        # Plotly Boxplots je Cluster
         for col in cols_to_plot:
             st.markdown(f"#### 📈 Boxplot für: `{col}`")
-            fig, ax = plt.subplots(figsize=(8, 4))
-            sns.boxplot(data=df_cluster, x="cluster", y=col, ax=ax)
-            ax.set_title(f"Verteilung von '{col}' nach Cluster")
-            st.pyplot(fig)
+            fig = px.box(df_cluster, x="cluster", y=col, color="cluster",
+                         color_discrete_sequence=px.colors.qualitative.Safe)
+            fig.update_layout(xaxis_title="Cluster", yaxis_title=col, showlegend=False)
+            st.plotly_chart(fig, use_container_width=True)
 
         # Vorschau mit Cluster-Labels
         st.markdown("### 🔍 Datensatz mit Cluster-Zuweisung:")
