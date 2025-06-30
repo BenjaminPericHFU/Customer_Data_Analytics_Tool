@@ -257,7 +257,9 @@ with tabs[3]:
             index=2,
             horizontal=True
         )
-
+        
+        st.divider()
+        
         st.markdown("### Spalten auswählen, bei denen die automatische Six Sigma Filterung angewandt wird:")
 
         selected_columns = []
@@ -311,6 +313,8 @@ with tabs[3]:
             st.write(f"**Gesamtzahl eindeutiger Ausreißer (über alle ausgewählten Spalten): {len(outlier_indices)}**")
             df_filtered = df_filtered.drop(index=outlier_indices)
             st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_filtered)} Zeilen statt {len(df_work)}")
+            
+            st.divider()
 
             # Visualisierung der ausgewählten Spalten mit Ausreißern
             st.subheader("Scatterplots mit Ausreißer-Markierung (y=1)")
