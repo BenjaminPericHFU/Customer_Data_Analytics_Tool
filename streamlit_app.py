@@ -465,6 +465,8 @@ with tabs[5]:
                 ax.set_ylabel(col)
                 st.pyplot(fig)
 
+        st.divider()
+
         # Mittelwerte berechnen (nur numerische Spalten)
         group_means_all = df_cluster.groupby("cluster").mean(numeric_only=True).round(3)
 
@@ -478,8 +480,20 @@ with tabs[5]:
 
         # Tabelle transponieren, sodass Cluster die Spalten sind und Features die Zeilen
         group_means_all_T = group_means_all.transpose()
+        
 
-        st.markdown("### Mittelwerte aller Spalten je Cluster (transponiert)")
+        st.markdown("### Mittelwerte aller Spalten je Cluster")
         st.dataframe(group_means_all_T)
+        
+        st.divider()
+        
+        csv_data = df_cluster.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Cluster-Daten als CSV herunterladen",
+            data=csv_data,
+            file_name="cluster_data.csv",
+            mime="text/csv"
+        )
+
 
 
