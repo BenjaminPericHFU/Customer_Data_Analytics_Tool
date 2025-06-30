@@ -237,30 +237,32 @@ with tabs[3]:
         st.markdown("### Spalten auswählen, bei denen die automatische Six Sigma Filterung angewandt wird:")
 
         selected_columns = []
-        outlier_counts = {}
 
-        # Ausreißeranzahl pro Spalte berechnen
-        for col in column_classification["xy"]:
-            mean = df_work[col].mean()
-            std = df_work[col].std()
-            lower_bound = mean - sigma_level * std
-            upper_bound = mean + sigma_level * std
-
-            mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
-            outlier_counts[col] = mask_outliers.sum()
-
-        # Checkbox + fett linksbündig Text in einer Zeile
-        # Erster col breiter als zweiter
         for col_name in column_classification["xy"]:
-            c1, c2 = st.columns([3, 2])  # Erste Spalte breiter (Checkbox mehr Platz)
+            c1, c2 = st.columns([3, 2])  # Checkbox links, Text rechts
+
             with c1:
                 checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")
+
             with c2:
+                if checked:
+                    mean = df_work[col_name].mean()
+                    std = df_work[col_name].std()
+                    lower_bound = mean - sigma_level * std
+                    upper_bound = mean + sigma_level * std
+
+                    mask_outliers = (df_work[col_name] < lower_bound) | (df_work[col_name] > upper_bound)
+                    count_outliers = mask_outliers.sum()
+                else:
+                    count_outliers = 0
+
                 st.markdown(
-                    f"<div style='text-align: left; font-weight: bold;'>"
-                    f"{col_name} — Ausreißer: {outlier_counts[col_name]}</div>",
+                    f"<div style='text-align: left;'>"
+                    f"{col_name} — Ausreißer: <span style='font-weight: bold;'>{count_outliers}</span>"
+                    f"</div>",
                     unsafe_allow_html=True,
                 )
+
             if checked:
                 selected_columns.append(col_name)
 
@@ -315,7 +317,6 @@ with tabs[3]:
                 ax.legend(by_label.values(), by_label.keys())
 
                 st.pyplot(fig)
-
 
 
 
