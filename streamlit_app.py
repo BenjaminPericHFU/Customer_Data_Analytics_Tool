@@ -249,15 +249,15 @@ with tabs[3]:
             mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
             outlier_counts[col] = mask_outliers.sum()
 
-        # Für jede Spalte eine einzelne Zeile mit Checkbox links und Text rechts
+        # Checkbox + fett linksbündig Text in einer Zeile
         for col_name in column_classification["xy"]:
             c1, c2 = st.columns([1, 3])
             with c1:
-                checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")  # hier value=False
+                checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")
             with c2:
                 st.markdown(
-                    f"<div style='text-align: right;'>"
-                    f"Ausreißer in Spalte {col_name}: {outlier_counts[col_name]}</div>",
+                    f"<div style='text-align: left; font-weight: bold;'>"
+                    f"{col_name} — Ausreißer: {outlier_counts[col_name]}</div>",
                     unsafe_allow_html=True,
                 )
             if checked:
