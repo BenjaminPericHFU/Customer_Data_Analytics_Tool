@@ -365,7 +365,7 @@ with tabs[3]:
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[4]:
-    st.header("📊 K-Means Clustering & Gruppierte Visualisierung")
+    st.header("📊 K-Means Clustering & Interaktive Visualisierung")
 
     if df_filtered is None or df_filtered.empty:
         st.warning("Bitte lade und filtere zuerst die Daten im vorherigen Tab.")
@@ -392,33 +392,45 @@ with tabs[4]:
         # KMeans Clustering durchführen
         from sklearn.cluster import KMeans
         model = KMeans(n_clusters=k, n_init="auto", random_state=42)
-        clusters = model.fit_predict(numeric_df)
-
-        # Cluster als erste Spalte hinzufügen
-        df_cluster.insert(0, "cluster", clusters.astype(str))  # als str für bessere Plotly-Farbgebung
+        df_cluster["cluster"] = model.fit_predict(numeric_df)
 
         st.success(f"✅ Clustering mit **{k} Clustern** durchgeführt.")
 
-        # Spaltenauswahl zur Visualisierung
-        st.markdown("### 📌 Wähle Spalten zur Visualisierung nach Cluster-Gruppen:")
-        cols_to_plot = st.multiselect(
-            "Spalten für Boxplots",
+        # Auswahl der Achsen für Scatterplot
+        st.markdown("### 📊 Interaktive Cluster-Visualisierung (Scatterplot)")
+
+        x_col = st.selectbox(
+            "X-Achse wählen:",
             options=numeric_df.columns.tolist(),
-            default=numeric_df.columns[:3].tolist() if len(numeric_df.columns) >= 3 else numeric_df.columns.tolist(),
-            key="kmeans_multiselect_cols"
+            index=0,
+            key="scatter_x_col"
+        )
+        y_col = st.selectbox(
+            "Y-Achse wählen:",
+            options=numeric_df.columns.tolist(),
+            index=1 if len(numeric_df.columns) > 1 else 0,
+            key="scatter_y_col"
         )
 
-        # Plotly Boxplots je Cluster
-        for col in cols_to_plot:
-            st.markdown(f"#### 📈 Boxplot für: `{col}`")
-            fig = px.box(df_cluster, x="cluster", y=col, color="cluster",
-                         color_discrete_sequence=px.colors.qualitative.Safe)
-            fig.update_layout(xaxis_title="Cluster", yaxis_title=col, showlegend=False)
-            st.plotly_chart(fig, use_container_width=True)
+        import plotly.express as px
 
-        # Vorschau mit Cluster-Labels
+        fig = px.scatter(
+            df_cluster,
+            x=x_col,
+            y=y_col,
+            color=df_cluster["cluster"].astype(str),
+            labels={"color": "Cluster"},
+            title=f"Cluster-Visualisierung: {x_col} vs. {y_col}",
+            color_discrete_sequence=px.colors.qualitative.Dark24
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Datensatz mit Cluster-Zuweisung anzeigen, Cluster als erste Spalte
+        cols_order = ["cluster"] + [col for col in df_cluster.columns if col != "cluster"]
         st.markdown("### 🔍 Datensatz mit Cluster-Zuweisung:")
-        st.dataframe(df_cluster.head())
+        st.dataframe(df_cluster[cols_order].head())
+
 
 
 
