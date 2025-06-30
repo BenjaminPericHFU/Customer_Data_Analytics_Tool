@@ -133,7 +133,7 @@ with tabs[2]:
     # Abschnitt: Lernarten
     st.subheader("📚 Supervised vs. Unsupervised Learning")
     st.markdown("""
-    Beim **Supervised Learning** werden Modelle mit bekannten Klassen und Zielgrößen trainiert – z.b. unterscheidet man Kundendaten in Kundengruppen von mit einer hohen und niedrigen Kaufhäufigkeit.  
+    Beim **Supervised Learning** werden Modelle mit bekannten Klassen und Zielgrößen trainiert – z.b. untergliedert man Kundendaten in Kundengruppen mit einer hohen und niedrigen Kaufhäufigkeit.  
     ➕ Es liegen also Daten **mit Labels** vor, die als Grundlage für Vorhersagen dienen.
 
     Beim **Unsupervised Learning** hingegen gibt es **keine vorgegebenen Klassen**.  
