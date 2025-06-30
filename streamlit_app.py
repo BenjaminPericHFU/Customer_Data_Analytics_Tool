@@ -18,7 +18,7 @@ with col2:
     st.markdown("<h1 style='margin-top: 5px;'>Customer Data Analytics Tool</h1>", unsafe_allow_html=True)
 
 # Tabs hinzufuegen
-tabs = st.tabs(["Daten", "Visualisierung", "ML-Tutorial", "Datenvorverarbeitung", "Anwendung & Auswertung"], width = "stretch")
+tabs = st.tabs(["Daten", "Visualisierung", "ML-Tutorial", "Datenvorverarbeitung", "K-Means Clustering", "Auswertung & Analyse"], width = "stretch")
 
 
 
