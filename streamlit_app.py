@@ -9,6 +9,7 @@ import plotly.express as px
 
 # Logo ganz oben zentriert
 # st.image("assets/Kompetenzzentrum_Logo.png", width=500)
+st.set_page_config(page_title="Meine App", layout="wide")
 
 col1, col2 = st.columns([1, 5])
 with col1:
