@@ -459,25 +459,27 @@ with tabs[5]:
                     x="cluster",
                     y=col,
                     ax=ax,
-                    palette="Set2"
+                    palette="Set2"  # Farbpalette für Cluster-Gruppen
                 )
                 ax.set_xlabel("Cluster")
                 ax.set_ylabel(col)
                 st.pyplot(fig)
 
-        # Am Ende: Mittelwerte aller Spalten je Cluster (numerisch)
-        st.markdown("### Mittelwerte aller Spalten je Cluster")
-        
         # Mittelwerte berechnen (nur numerische Spalten)
         group_means_all = df_cluster.groupby("cluster").mean(numeric_only=True).round(3)
-        
-        # Fehlende Spalten mit '-' auffüllen (optional, falls nicht numerisch)
+
+        # Fehlende Spalten mit '-' auffüllen (für nicht numerische Spalten)
         for col in df_cluster.columns:
             if col not in group_means_all.columns and col != "cluster":
                 group_means_all[col] = "-"
-        
-        # Spalten sortieren wie im original DataFrame
+
+        # Spalten sortieren wie im Original DataFrame (ohne 'cluster')
         group_means_all = group_means_all.reindex(columns=[col for col in df_cluster.columns if col != "cluster"])
-        
-        st.dataframe(group_means_all)
+
+        # Tabelle transponieren, sodass Cluster die Spalten sind und Features die Zeilen
+        group_means_all_T = group_means_all.transpose()
+
+        st.markdown("### Mittelwerte aller Spalten je Cluster (transponiert)")
+        st.dataframe(group_means_all_T)
+
 
