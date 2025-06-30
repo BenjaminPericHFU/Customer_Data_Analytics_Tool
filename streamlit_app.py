@@ -250,8 +250,9 @@ with tabs[3]:
             outlier_counts[col] = mask_outliers.sum()
 
         # Checkbox + fett linksbündig Text in einer Zeile
+        # Erster col breiter als zweiter
         for col_name in column_classification["xy"]:
-            c1, c2 = st.columns([1, 3])
+            c1, c2 = st.columns([3, 2])  # Erste Spalte breiter (Checkbox mehr Platz)
             with c1:
                 checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")
             with c2:
