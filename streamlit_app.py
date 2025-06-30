@@ -454,7 +454,13 @@ with tabs[5]:
             for col in selected_columns:
                 st.subheader(f"Boxplot für {col} gruppiert nach Cluster")
                 fig, ax = plt.subplots(figsize=(8, 4))
-                sns.boxplot(data=df_cluster, x="cluster", y=col, ax=ax)
+                sns.boxplot(
+                    data=df_cluster,
+                    x="cluster",
+                    y=col,
+                    ax=ax,
+                    palette="Set2"  # Farbpalette für Cluster-Gruppen
+                )
                 ax.set_xlabel("Cluster")
                 ax.set_ylabel(col)
                 st.pyplot(fig)
