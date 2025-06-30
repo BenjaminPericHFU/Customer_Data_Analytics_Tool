@@ -223,6 +223,65 @@ with tabs[2]:
 
 
 
+# ---------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------
+
+with tabs[3]:
+    st.header("🔍 Automatisierte Ausreißererkennung & Filterung (Boxplot-Methode)")
+
+    if df_work is None:
+        st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
+    else:
+        df_filtered = df_work.copy()
+        outlier_indices = set()
+
+        # 1. Ausreißer für jede numerische Variable in column_classification["xy"] erkennen
+        for col in column_classification["xy"]:
+            Q1 = df_filtered[col].quantile(0.25)
+            Q3 = df_filtered[col].quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
+
+            # Maske der Ausreißer
+            mask_outliers = (df_filtered[col] < lower_bound) | (df_filtered[col] > upper_bound)
+            outlier_idx_col = df_filtered[mask_outliers].index
+
+            st.write(f"Ausreißer in Spalte **{col}**: {len(outlier_idx_col)}")
+
+            # Alle Ausreißer-Indizes sammeln
+            outlier_indices.update(outlier_idx_col)
+
+        # 2. Gesamten DataFrame ohne alle Ausreißer filtern (Schnittmenge)
+        st.write(f"Gesamtzahl der eindeutigen Ausreißer (über alle Spalten): {len(outlier_indices)}")
+        df_no_outliers = df_filtered.drop(index=outlier_indices)
+
+        st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_no_outliers)} Zeilen statt {len(df_filtered)}")
+
+        # 3. Scatterplots der Spalten mit Ausreißer-Hervorhebung
+
+        st.subheader("Scatterplots mit Ausreißer-Markierung")
+
+        # Für jede Spalte scatterplot untereinander, Ausreißer rot, rest blau
+        for col in column_classification["xy"]:
+            fig, ax = plt.subplots(figsize=(8, 3))
+
+            # Alle Punkte normal
+            ax.scatter(df_filtered.index, df_filtered[col], color="blue", label="Normal", alpha=0.6)
+
+            # Ausreißer rot
+            mask_outliers = (df_filtered[col] < (df_filtered[col].quantile(0.25) - 1.5 * (df_filtered[col].quantile(0.75) - df_filtered[col].quantile(0.25)))) | \
+                            (df_filtered[col] > (df_filtered[col].quantile(0.75) + 1.5 * (df_filtered[col].quantile(0.75) - df_filtered[col].quantile(0.25))))
+            ax.scatter(df_filtered.index[mask_outliers], df_filtered.loc[mask_outliers, col], color="red", label="Ausreißer", alpha=0.8)
+
+            ax.set_title(f"Scatterplot der Spalte '{col}' mit Ausreißer-Markierung")
+            ax.set_xlabel("Index")
+            ax.set_ylabel(col)
+            ax.legend()
+            st.pyplot(fig)
+
+
+
 
 
 
