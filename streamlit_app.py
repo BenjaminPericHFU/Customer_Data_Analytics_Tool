@@ -352,7 +352,7 @@ with tabs[3]:
             
             columns_to_exclude = st.multiselect(
                 label="Wähle Sie Spalten aus, die **irrelevant** für die Ausreißer-Erkennung sind:",
-                options=column_classification["xy"],
+                options=df_filtered.columns.tolist(),
                 default=[],
                 help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
             )
