@@ -227,11 +227,30 @@ with tabs[2]:
 # ---------------------------------------------------------------------------------------------------
 
 with tabs[3]:
-    st.header("🔍 Ausreißer-Erkennung mit Six Sigma Kontrolle")
+    st.header("🔍 Autonome Ausreißer-Filterung mit Six Sigma Methode")
 
     if df_work is None:
         st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
     else:
+        
+        st.markdown("""
+            ### 🔢 **Was bedeuten die Sigma-Level?**
+            
+            Das **Sigma-Level** bestimmt, wie streng die Ausreißer-Erkennung ist, also wie weit Werte vom Mittelwert abweichen dürfen, bevor sie als Ausreißer gelten:
+            
+            - **2 Sigma (±2 Standardabweichungen)**  
+              ⚠️ **Strenger Filter** – Hier werden schon relativ viele Werte als Ausreißer erkannt, da alle Werte außerhalb von etwa 95 % des Erwartungsbereichs entfernt werden.  
+              👉 Gut, wenn du viele potenzielle Ausreißer finden möchtest.
+            
+            - **3 Sigma (±3 Standardabweichungen)**  
+              ✔️ **Klassische Six Sigma Regel** – Werte außerhalb von ca. 99,7 % der Daten gelten als Ausreißer.  
+              🔄 Perfekter Kompromiss zwischen Sensitivität und Robustheit, oft empfohlen für die meisten Anwendungen.
+            
+            - **6 Sigma (±6 Standardabweichungen)**  
+              🛡️ **Sehr großzügiger Filter** – Nur extrem abweichende Werte werden als Ausreißer erkannt.  
+              🧘‍♂️ Ideal, wenn du nur die wirklich starken Ausreißer filtern möchtest.
+            """, unsafe_allow_html=True)
+        
         sigma_level = st.radio(
             "Wähle das Sigma-Level für die Ausreißer-Erkennung:",
             options=[2, 3, 6],
@@ -272,7 +291,7 @@ with tabs[3]:
                 selected_columns.append(col_name)
 
         if len(selected_columns) == 0:
-            st.info("Bitte mindestens eine Spalte auswählen.")
+            st.info("Visualisierungen sind zu sehen, sobald eine Spalte ausgewählt wird.")
         else:
             df_filtered = df_work.copy()
             outlier_indices = set()
