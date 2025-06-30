@@ -348,7 +348,7 @@ with tabs[3]:
                     st.pyplot(fig)
 
             st.markdown("---")
-            st.markdown("### 🧹 **Unnötige Spalten vor der Analyse ausschließen**")
+            st.markdown("### 🧹 **Irrelevante Spalten vor der Analyse ausschließen**")
             
             columns_to_exclude = st.multiselect(
                 label="Wähle Spalten aus, die **nicht** für die Ausreißer-Erkennung verwendet werden sollen:",
