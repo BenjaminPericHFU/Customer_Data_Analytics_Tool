@@ -429,7 +429,7 @@ with tabs[4]:
         # Datensatz mit Cluster-Zuweisung anzeigen, Cluster als erste Spalte
         cols_order = ["cluster"] + [col for col in df_cluster.columns if col != "cluster"]
         st.markdown("### 🔍 Datensatz mit Cluster-Zuweisung:")
-        st.dataframe(df_cluster[cols_order].head())
+        st.dataframe(df_cluster[cols_order])
 
 
 
