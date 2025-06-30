@@ -234,6 +234,7 @@ with tabs[3]:
     else:
         df_filtered = df_work.copy()
         outlier_indices = set()
+        cols_with_outliers = []
 
         # 1. Ausreißer für jede numerische Variable in column_classification["xy"] erkennen
         for col in column_classification["xy"]:
@@ -247,10 +248,10 @@ with tabs[3]:
             mask_outliers = (df_filtered[col] < lower_bound) | (df_filtered[col] > upper_bound)
             outlier_idx_col = df_filtered[mask_outliers].index
 
-            st.write(f"Ausreißer in Spalte **{col}**: {len(outlier_idx_col)}")
-
-            # Alle Ausreißer-Indizes sammeln
-            outlier_indices.update(outlier_idx_col)
+            if len(outlier_idx_col) > 0:
+                st.write(f"Ausreißer in Spalte **{col}**: {len(outlier_idx_col)}")
+                outlier_indices.update(outlier_idx_col)
+                cols_with_outliers.append(col)
 
         # 2. Gesamten DataFrame ohne alle Ausreißer filtern (Schnittmenge)
         st.write(f"Gesamtzahl der eindeutigen Ausreißer (über alle Spalten): {len(outlier_indices)}")
@@ -258,26 +259,44 @@ with tabs[3]:
 
         st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_no_outliers)} Zeilen statt {len(df_filtered)}")
 
-        # 3. Scatterplots der Spalten mit Ausreißer-Hervorhebung
+        # 3. Scatterplots der Spalten, bei denen Ausreißer gefunden wurden, mit y=1
+        st.subheader("Scatterplots mit Ausreißer-Markierung (y=1)")
 
-        st.subheader("Scatterplots mit Ausreißer-Markierung")
+        for col in cols_with_outliers:
+            Q1 = df_filtered[col].quantile(0.25)
+            Q3 = df_filtered[col].quantile(0.75)
+            IQR = Q3 - Q1
+            lower_bound = Q1 - 1.5 * IQR
+            upper_bound = Q3 + 1.5 * IQR
 
-        # Für jede Spalte scatterplot untereinander, Ausreißer rot, rest blau
-        for col in column_classification["xy"]:
-            fig, ax = plt.subplots(figsize=(8, 3))
+            mask_outliers = (df_filtered[col] < lower_bound) | (df_filtered[col] > upper_bound)
 
-            # Alle Punkte normal
-            ax.scatter(df_filtered.index, df_filtered[col], color="blue", label="Normal", alpha=0.6)
+            fig, ax = plt.subplots(figsize=(8, 2))
 
-            # Ausreißer rot
-            mask_outliers = (df_filtered[col] < (df_filtered[col].quantile(0.25) - 1.5 * (df_filtered[col].quantile(0.75) - df_filtered[col].quantile(0.25)))) | \
-                            (df_filtered[col] > (df_filtered[col].quantile(0.75) + 1.5 * (df_filtered[col].quantile(0.75) - df_filtered[col].quantile(0.25))))
-            ax.scatter(df_filtered.index[mask_outliers], df_filtered.loc[mask_outliers, col], color="red", label="Ausreißer", alpha=0.8)
+            # Normale Werte: y=1, blau
+            ax.scatter(df_filtered.index[~mask_outliers], [1]*sum(~mask_outliers), 
+                       color="blue", label="Normal", alpha=0.6)
 
-            ax.set_title(f"Scatterplot der Spalte '{col}' mit Ausreißer-Markierung")
+            # Ausreißer links (kleiner als untere Grenze): y=1, rot, x-Wert leicht links versetzt für bessere Sichtbarkeit
+            left_outliers = df_filtered[(df_filtered[col] < lower_bound)]
+            ax.scatter(left_outliers.index, [1]*len(left_outliers), 
+                       color="red", label="Ausreißer links", alpha=0.8)
+
+            # Ausreißer rechts (größer als obere Grenze): y=1, rot, x-Wert leicht rechts versetzt
+            right_outliers = df_filtered[(df_filtered[col] > upper_bound)]
+            ax.scatter(right_outliers.index, [1]*len(right_outliers), 
+                       color="red", label="Ausreißer rechts", alpha=0.8)
+
+            ax.set_yticks([1])
+            ax.set_yticklabels([""])
             ax.set_xlabel("Index")
-            ax.set_ylabel(col)
-            ax.legend()
+            ax.set_title(f"Ausreißererkennung für '{col}' (Boxplot-Methode)")
+
+            # Legende nur einmal anzeigen
+            handles, labels = ax.get_legend_handles_labels()
+            by_label = dict(zip(labels, handles))
+            ax.legend(by_label.values(), by_label.keys())
+
             st.pyplot(fig)
 
 
