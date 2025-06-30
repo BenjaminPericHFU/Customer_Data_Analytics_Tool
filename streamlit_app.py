@@ -11,6 +11,17 @@ import plotly.express as px
 # st.image("assets/Kompetenzzentrum_Logo.png", width=500)
 st.set_page_config(page_title="Meine App", layout="wide")
 
+st.markdown("""
+    <style>
+        section.main > div {
+            max-width: 600px;       /* fixe maximale Breite */
+            min-width: 500px;        /* optional: Mindestbreite */
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2rem;
+        }
+    </style>
+""", unsafe_allow_html=True)
 col1, col2 = st.columns([1, 5])
 with col1:
     st.image("assets/Logo_01.png", width=200)
