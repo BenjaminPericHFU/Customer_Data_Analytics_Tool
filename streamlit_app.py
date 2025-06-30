@@ -236,19 +236,19 @@ with tabs[3]:
         st.markdown("""
             ### 🔢 **Was bedeuten die Sigma-Level?**
             
-            Das **Sigma-Level** bestimmt, wie streng die Ausreißer-Erkennung ist, also wie weit Werte vom Mittelwert abweichen dürfen, bevor sie als Ausreißer gelten:
+            Das **Sigma-Level** bestimmt, wie streng die Ausreißer-Erkennung ist, also wie stark sich Werte vom Durchschnitt unterscheiden müssen, um als Ausreißer erkannt zu werden:
             
             - **2 Sigma (±2 Standardabweichungen)**  
-              ⚠️ **Strenger Filter** – Hier werden schon relativ viele Werte als Ausreißer erkannt, da alle Werte außerhalb von etwa 95 % des Erwartungsbereichs entfernt werden.  
-              👉 Gut, wenn du viele potenzielle Ausreißer finden möchtest.
+              ⚠️ **Strenger Filter** – Es werden schon viele Werte als Ausreißer erkannt, auch wenn sie nur etwas ungewöhnlich sind.  
+              👉 Gut, wenn du möglichst viele Auffälligkeiten finden möchtest.
             
             - **3 Sigma (±3 Standardabweichungen)**  
-              ✔️ **Klassische Six Sigma Regel** – Werte außerhalb von ca. 99,7 % der Daten gelten als Ausreißer.  
-              🔄 Perfekter Kompromiss zwischen Sensitivität und Robustheit, oft empfohlen für die meisten Anwendungen.
+              ✔️ **Üblicher Standard** – Es werden nur Werte entfernt, die wirklich deutlich anders sind als der Durchschnitt.  
+              🔄 Häufig die beste Wahl, weil es eine gute Balance bietet.
             
             - **6 Sigma (±6 Standardabweichungen)**  
-              🛡️ **Sehr großzügiger Filter** – Nur extrem abweichende Werte werden als Ausreißer erkannt.  
-              🧘‍♂️ Ideal, wenn du nur die wirklich starken Ausreißer filtern möchtest.
+              🛡️ **Sehr lockerer Filter** – Nur sehr extreme Ausreißer werden erkannt, alles, was sich leicht unterscheidet, bleibt drin.  
+              🧘‍♂️ Ideal, wenn du nur ganz große Ausreißer entfernen möchtest.
             """, unsafe_allow_html=True)
         
         sigma_level = st.radio(
