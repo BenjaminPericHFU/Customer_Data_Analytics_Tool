@@ -91,7 +91,7 @@ with tabs[0]:
         uploaded_file = st.file_uploader("Upload your CSV file (nur CSV mit ';' als Separator)", type=["csv"])
         if uploaded_file is not None:
             try:
-                df = pd.read_csv(uploaded_file)
+                df = pd.read_csv(uploaded_file, sep=';')
                 df_work = df.copy()
                 st.success("Datensatz wurde erfolgreich eingeladen.")
             except Exception as e:
