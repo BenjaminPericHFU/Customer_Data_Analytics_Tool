@@ -27,8 +27,14 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+
+# Footer ganz unten
 st.sidebar.markdown(
-    "<small style='color:gray;'>Developed by <a href='https://smart-service-bw.de/' target='_blank'>Kompetenzzentrum Smart Services</a></small>",
+    """
+    <div style="color: white; font-size: 0.9em; position: relative; bottom: 0; width: 100%;">
+    ⚙️ Developed by <a href="https://smart-service-bw.de/" target="_blank" style="color: white; text-decoration: underline;">Kompetenzzentrum Smart Services</a>
+    </div>
+    """,
     unsafe_allow_html=True
 )
 
