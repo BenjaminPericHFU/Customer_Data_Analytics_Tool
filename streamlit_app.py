@@ -57,7 +57,7 @@ with st.sidebar:
     )
 col1, col2 = st.columns([1, 5])
 with col1:
-    st.image("assets/Logo_02.png", width=200)
+    st.image("assets/Logo_02_1.png", width=200)
 with col2:
     st.markdown("<h1 style='margin-top: 5px;'>Customer Data Analytics Tool</h1>", unsafe_allow_html=True)
 
