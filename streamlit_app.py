@@ -16,11 +16,19 @@ st.set_page_config(page_title="Meine App", layout="centered")
 # CSS für blaue Sidebar (#00B0DB)
 st.markdown("""
     <style>
+        /* Weißer Hintergrund für Hauptbereich */
+        .stApp {
+            background-color: white;
+        }
+
+        /* Hellblaue Sidebar */
         [data-testid="stSidebar"] {
             background-color: #B3E7F4;
         }
+
+        /* Optional: dunkle Schrift in Sidebar für besseren Kontrast */
         [data-testid="stSidebar"] * {
-            color: white;
+            color: black;
         }
     </style>
 """, unsafe_allow_html=True)
