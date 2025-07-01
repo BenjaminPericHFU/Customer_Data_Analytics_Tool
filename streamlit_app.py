@@ -11,6 +11,22 @@ import plotly.express as px
 # st.image("assets/Kompetenzzentrum_Logo.png", width=500)
 st.set_page_config(page_title="Meine App", layout="centered")
 
+# Sidebar mit Logo und Anleitung
+with st.sidebar:
+    st.image("assets/Kompetenzzentrum_Logo.png", use_column_width=True)
+    st.markdown("## Anleitung")
+    st.markdown("""
+    1. **Daten** hochladen oder laden  
+    2. **Visualisierung** der Rohdaten  
+    3. **ML-Tutorial** zur Einführung  
+    4. **Vorverarbeitung** auswählen  
+    5. **K-Means** zur Segmentierung  
+    6. **Analyse** und Ergebnisse bewerten
+    """)
+
+
+
+
 col1, col2 = st.columns([1, 5])
 with col1:
     st.image("assets/Logo_01.png", width=200)
