@@ -122,49 +122,52 @@ with tabs[0]:
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[1]:
-    st.header("📊 Interaktive Visualisierung")
+    st.header("\U0001F4CA Interaktive Visualisierung")
 
-    # --- Verteilung einer Einzelvariablen ---
-    st.subheader("Verteilung der Daten analysieren")
+    if df_work is None:
+        st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
+    else:
+        # --- Verteilung einer Einzelvariablen ---
+        st.subheader("Verteilung der Daten analysieren")
 
-    dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
-    group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="group_tab1")
-    color_arg_dist = None if group_col == "Keine" else group_col
+        dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
+        group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="group_tab1")
+        color_arg_dist = None if group_col == "Keine" else group_col
 
-    fig_dist = px.histogram(df, x=dist_col, color=color_arg_dist)
-    fig_dist.update_layout(barmode='overlay')  # oder 'group', je nach Präferenz
-    fig_dist.update_traces(opacity=0.75)  # bessere Lesbarkeit bei überlagerung
+        fig_dist = px.histogram(df_work, x=dist_col, color=color_arg_dist)
+        fig_dist.update_layout(barmode='overlay')  # oder 'group', je nach Präferenz
+        fig_dist.update_traces(opacity=0.75)  # bessere Lesbarkeit bei Überlagerung
 
-    st.plotly_chart(fig_dist, use_container_width=True)
+        st.plotly_chart(fig_dist, use_container_width=True)
 
-    # --- Trennlinie ---
-    st.divider()
-    
-    # --- Vergleich zweier Variablen ---
-    st.subheader("Beziehung zwischen Variablen visualisieren")
-    
-    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
-    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
-    hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
-    
-    plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
-    color_arg = None if hue_col == "Keine" else hue_col
-    
-    # Benutzerdefinierte, klare Farbpalette – z. B. Plotly, D3 oder Tableau-Schema
-    custom_colors = [
-        "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", 
-        "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", 
-        "#bcbd22", "#17becf"
-    ]
-    
-    if plot_type == "Balkendiagramm":
-        fig = px.bar(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
-    elif plot_type == "Scatterplot":
-        fig = px.scatter(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
-    elif plot_type == "Liniendiagramm":
-        fig = px.line(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
-    
-    st.plotly_chart(fig, use_container_width=True)
+        # --- Trennlinie ---
+        st.divider()
+
+        # --- Vergleich zweier Variablen ---
+        st.subheader("Beziehung zwischen Variablen visualisieren")
+
+        x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
+        y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
+        hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
+
+        plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
+        color_arg = None if hue_col == "Keine" else hue_col
+
+        # Benutzerdefinierte, klare Farbpalette – z. B. Plotly, D3 oder Tableau-Schema
+        custom_colors = [
+            "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
+            "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
+            "#bcbd22", "#17becf"
+        ]
+
+        if plot_type == "Balkendiagramm":
+            fig = px.bar(df_work, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
+        elif plot_type == "Scatterplot":
+            fig = px.scatter(df_work, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
+        elif plot_type == "Liniendiagramm":
+            fig = px.line(df_work, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
+
+        st.plotly_chart(fig, use_container_width=True)
 
 
 
