@@ -41,6 +41,7 @@ with st.sidebar:
     5. **K-Means** zur Segmentierung  
     6. **Analyse** und Ergebnisse bewerten
     """)
+    st.divider()
 
     # Spacer, der den Footer nach unten drückt
     st.markdown("<div style='flex-grow:1'></div>", unsafe_allow_html=True)
