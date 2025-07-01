@@ -11,6 +11,16 @@ import plotly.express as px
 # st.image("assets/Kompetenzzentrum_Logo.png", width=500)
 st.set_page_config(page_title="Meine App", layout="centered")
 
+
+st.markdown("""
+    <style>
+        [data-testid="stSidebar"] {
+            background-color: #f0f2f6;  /* Heller Grauton */
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # Sidebar mit Logo und Anleitung
 with st.sidebar:
     st.image("assets/Kompetenzzentrum_Logo.png", use_container_width=True)
