@@ -10,30 +10,56 @@ import plotly.express as px
 # Logo ganz oben zentriert
 # st.image("assets/Kompetenzzentrum_Logo.png", width=500)
 st.set_page_config(page_title="Meine App", layout="centered")
+st.markdown("""
+    <style>
+        .sidebar-container {
+            background-color: #00B0DB;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px;
+        }
+        .sidebar-content {
+            /* Oberer Inhalt */
+        }
+        .sidebar-footer {
+            font-size: 0.9em;
+            margin-top: auto;
+            padding-bottom: 10px;
+            text-align: left;
+        }
+        .sidebar-footer a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-with st.sidebar:
-    # Oberer Inhalt
-    with st.container():
-        st.image("assets/Logo_Negativ.png", use_container_width=True)
-        st.markdown("## Anleitung")
-        st.markdown("""
-        1. **Daten** hochladen oder laden  
-        2. **Visualisierung** der Rohdaten  
-        3. **ML-Tutorial** zur Einführung  
-        4. **Vorverarbeitung** auswählen  
-        5. **K-Means** zur Segmentierung  
-        6. **Analyse** und Ergebnisse bewerten
-        """)
-    
-    # Platzhalter, um den Footer nach unten zu schieben
-    st.empty()
-    
-    # Footer
-    with st.container():
-        st.markdown(
-            "⚙️ Developed by [Kompetenzzentrum Smart Services](https://smart-service-bw.de/)",
-            unsafe_allow_html=True
-        )
+# HTML für die Sidebar
+sidebar_html = """
+<div class="sidebar-container">
+    <div class="sidebar-content">
+        <img src="assets/Logo_Negativ.png" style="width: 100%;">
+        <h2>Anleitung</h2>
+        <p>
+            1. <strong>Daten</strong> hochladen oder laden<br>
+            2. <strong>Visualisierung</strong> der Rohdaten<br>
+            3. <strong>ML-Tutorial</strong> zur Einführung<br>
+            4. <strong>Vorverarbeitung</strong> auswählen<br>
+            5. <strong>K-Means</strong> zur Segmentierung<br>
+            6. <strong>Analyse</strong> und Ergebnisse bewerten
+        </p>
+    </div>
+    <div class="sidebar-footer">
+        ⚙️ Developed by <a href="https://smart-service-bw.de/" target="_blank">Kompetenzzentrum Smart Services</a>
+    </div>
+</div>
+"""
+
+# Sidebar rendern
+st.sidebar.markdown(sidebar_html, unsafe_allow_html=True)
 
 
 col1, col2 = st.columns([1, 5])
