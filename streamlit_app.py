@@ -23,7 +23,7 @@ st.markdown("""
 
 # Sidebar mit Logo und Anleitung
 with st.sidebar:
-    st.image("assets/Kompetenzzentrum_Logo.png", use_container_width=True)
+    st.image("assets/Logo_Negativ.png", use_container_width=True)
     st.markdown("## Anleitung")
     st.markdown("""
     1. **Daten** hochladen oder laden  
