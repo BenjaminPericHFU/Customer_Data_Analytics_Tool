@@ -16,20 +16,11 @@ st.set_page_config(page_title="Meine App", layout="centered")
 # CSS für blaue Sidebar (#00B0DB)
 st.markdown("""
     <style>
-        /* Sidebar-Breite erhöhen */
-        [data-testid="stSidebar"] {
-            width: 320px;  /* Standard ist ca. 280px */
-            min-width: 320px;
-        }
-        /* Inhalt der Sidebar anpassen, damit es nicht überläuft */
-        [data-testid="stSidebar"][style] > div:first-child {
-            width: 320px;
-        }
-
-        /* Sidebar-Hintergrund und Textfarbe */
+        /* Sidebar-Hintergrund auf Hauptfarbe Blau */
         [data-testid="stSidebar"] {
             background-color: #00B0DB;
         }
+        /* Weißer Text für guten Kontrast */
         [data-testid="stSidebar"] * {
             color: white;
         }
