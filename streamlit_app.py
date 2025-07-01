@@ -13,7 +13,7 @@ st.set_page_config(page_title="Meine App", layout="centered")
 
 # Sidebar mit Logo und Anleitung
 with st.sidebar:
-    st.image("assets/Kompetenzzentrum_Logo.png", use_column_width=True)
+    st.image("assets/Kompetenzzentrum_Logo.png", use_container_width=True)
     st.markdown("## Anleitung")
     st.markdown("""
     1. **Daten** hochladen oder laden  
