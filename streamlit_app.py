@@ -12,23 +12,19 @@ import plotly.express as px
 st.set_page_config(page_title="Meine App", layout="centered")
 
 
+
+# CSS für blaue Sidebar (#00B0DB)
 st.markdown("""
     <style>
-        /* Background for main page */
-        .stApp {
+        [data-testid="stSidebar"] {
             background-color: #B3E7F4;
         }
-
-        /* Optional: make sidebar consistent if needed */
-        [data-testid="stSidebar"] {
-            background-color: #00B0DB;  /* main blue */
-        }
-
         [data-testid="stSidebar"] * {
             color: white;
         }
     </style>
 """, unsafe_allow_html=True)
+
 
 
 # Sidebar mit Logo und Anleitung
