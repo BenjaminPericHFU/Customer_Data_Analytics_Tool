@@ -11,46 +11,8 @@ import plotly.express as px
 # st.image("assets/Kompetenzzentrum_Logo.png", width=500)
 st.set_page_config(page_title="Meine App", layout="centered")
 
-# CSS für Sidebar mit fixiertem Footer unten links
-import streamlit as st
-
-# CSS für Sidebar mit fixiertem Footer unten links
-st.markdown("""
-    <style>
-        /* Sidebar-Hintergrund auf Hauptfarbe Blau */
-        [data-testid="stSidebar"] {
-            background-color: #00B0DB;
-            position: relative;
-            min-height: 100vh;  /* Mindesthöhe für volle Viewport-Höhe */
-            padding-bottom: 60px; /* Platz für den Footer */
-            box-sizing: border-box; /* Verhindert Überlauf durch Padding */
-            color: white;
-        }
-        /* Weißer Text für guten Kontrast */
-        [data-testid="stSidebar"] * {
-            color: white !important;
-        }
-        /* Footer fixiert unten links */
-        .sidebar-footer {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            font-size: 0.9em;
-            white-space: nowrap;
-        }
-        .sidebar-footer a {
-            color: white !important;
-            text-decoration: underline;
-        }
-        /* Sicherstellen, dass der Inhalt oben bleibt */
-        .sidebar-content {
-            padding-top: 10px;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
 with st.sidebar:
-    # Inhalt oben in einem Container
+    # Oberer Inhalt
     with st.container():
         st.image("assets/Logo_Negativ.png", use_container_width=True)
         st.markdown("## Anleitung")
@@ -63,15 +25,15 @@ with st.sidebar:
         6. **Analyse** und Ergebnisse bewerten
         """)
     
-    # Footer ganz unten links fixieren
-    st.markdown(
-        """
-        <div class="sidebar-footer">
-            ⚙️ Developed by <a href="https://smart-service-bw.de/" target="_blank">Kompetenzzentrum Smart Services</a>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # Platzhalter, um den Footer nach unten zu schieben
+    st.empty()
+    
+    # Footer
+    with st.container():
+        st.markdown(
+            "⚙️ Developed by [Kompetenzzentrum Smart Services](https://smart-service-bw.de/)",
+            unsafe_allow_html=True
+        )
 
 
 col1, col2 = st.columns([1, 5])
