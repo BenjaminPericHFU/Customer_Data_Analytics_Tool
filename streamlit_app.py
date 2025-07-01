@@ -76,7 +76,7 @@ with tabs[0]:
     use_custom = st.checkbox("Testdaten laden? (Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden)", value=True)
 
     df_work = None
-    df_work = pd.DataFrame()
+    
     n_cols = 10  # maximale Spaltenanzahl für Anzeige
 
     if use_custom:
