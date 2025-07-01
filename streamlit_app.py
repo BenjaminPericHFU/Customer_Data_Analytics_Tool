@@ -11,19 +11,32 @@ import plotly.express as px
 # st.image("assets/Kompetenzzentrum_Logo.png", width=500)
 st.set_page_config(page_title="Meine App", layout="centered")
 
-# CSS für blaue Sidebar (#00B0DB)
+# CSS für Sidebar mit fixiertem Footer unten links
 st.markdown("""
     <style>
         /* Sidebar-Hintergrund auf Hauptfarbe Blau */
         [data-testid="stSidebar"] {
             background-color: #00B0DB;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            position: relative;
+            height: 100vh;  /* Ganze Höhe des Viewports */
+            padding-bottom: 50px; /* Platz für den Footer */
+            color: white;
         }
         /* Weißer Text für guten Kontrast */
         [data-testid="stSidebar"] * {
             color: white;
+        }
+        /* Footer fixiert unten links */
+        .sidebar-footer {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+        .sidebar-footer a {
+            color: white !important;
+            text-decoration: underline;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -39,20 +52,16 @@ with st.sidebar:
     5. **K-Means** zur Segmentierung  
     6. **Analyse** und Ergebnisse bewerten
     """)
-
-    # Spacer, der den Footer nach unten drückt
-    st.markdown("<div style='flex-grow:1'></div>", unsafe_allow_html=True)
-
-    # Footer ganz unten
+    
+    # Footer ganz unten links fixieren
     st.markdown(
         """
-        <div style="color: white; font-size: 0.9em;">
-        ⚙️ Developed by <a href="https://smart-service-bw.de/" target="_blank" style="color: white; text-decoration: underline;">Kompetenzzentrum Smart Services</a>
+        <div class="sidebar-footer">
+            ⚙️ Developed by <a href="https://smart-service-bw.de/" target="_blank">Kompetenzzentrum Smart Services</a>
         </div>
         """,
         unsafe_allow_html=True
     )
-
 
 
 
