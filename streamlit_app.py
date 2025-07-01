@@ -12,19 +12,23 @@ import plotly.express as px
 st.set_page_config(page_title="Meine App", layout="centered")
 
 # CSS für Sidebar mit fixiertem Footer unten links
+import streamlit as st
+
+# CSS für Sidebar mit fixiertem Footer unten links
 st.markdown("""
     <style>
         /* Sidebar-Hintergrund auf Hauptfarbe Blau */
         [data-testid="stSidebar"] {
             background-color: #00B0DB;
             position: relative;
-            height: 100vh;  /* Ganze Höhe des Viewports */
-            padding-bottom: 50px; /* Platz für den Footer */
+            min-height: 100vh;  /* Mindesthöhe für volle Viewport-Höhe */
+            padding-bottom: 60px; /* Platz für den Footer */
+            box-sizing: border-box; /* Verhindert Überlauf durch Padding */
             color: white;
         }
         /* Weißer Text für guten Kontrast */
         [data-testid="stSidebar"] * {
-            color: white;
+            color: white !important;
         }
         /* Footer fixiert unten links */
         .sidebar-footer {
@@ -38,20 +42,26 @@ st.markdown("""
             color: white !important;
             text-decoration: underline;
         }
+        /* Sicherstellen, dass der Inhalt oben bleibt */
+        .sidebar-content {
+            padding-top: 10px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.image("assets/Logo_Negativ.png", use_container_width=True)
-    st.markdown("## Anleitung")
-    st.markdown("""
-    1. **Daten** hochladen oder laden  
-    2. **Visualisierung** der Rohdaten  
-    3. **ML-Tutorial** zur Einführung  
-    4. **Vorverarbeitung** auswählen  
-    5. **K-Means** zur Segmentierung  
-    6. **Analyse** und Ergebnisse bewerten
-    """)
+    # Inhalt oben in einem Container
+    with st.container():
+        st.image("assets/Logo_Negativ.png", use_container_width=True)
+        st.markdown("## Anleitung")
+        st.markdown("""
+        1. **Daten** hochladen oder laden  
+        2. **Visualisierung** der Rohdaten  
+        3. **ML-Tutorial** zur Einführung  
+        4. **Vorverarbeitung** auswählen  
+        5. **K-Means** zur Segmentierung  
+        6. **Analyse** und Ergebnisse bewerten
+        """)
     
     # Footer ganz unten links fixieren
     st.markdown(
@@ -62,7 +72,6 @@ with st.sidebar:
         """,
         unsafe_allow_html=True
     )
-
 
 
 col1, col2 = st.columns([1, 5])
