@@ -15,7 +15,7 @@ st.set_page_config(page_title="Meine App", layout="centered")
 st.markdown("""
     <style>
         [data-testid="stSidebar"] {
-            background-color: #f0f2f6;  /* Heller Grauton */
+            background-color: #00B0DB;  /* Heller Grauton */
         }
     </style>
 """, unsafe_allow_html=True)
