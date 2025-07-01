@@ -27,7 +27,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-
+st.sidebar.markdown(
+    "<small style='color:gray;'>Developed by <a href='https://smart-service-bw.de/' target='_blank'>Kompetenzzentrum Smart Services</a></small>",
+    unsafe_allow_html=True
+)
 
 # Sidebar mit Logo und Anleitung
 with st.sidebar:
