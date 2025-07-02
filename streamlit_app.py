@@ -37,7 +37,7 @@ with st.sidebar:
     1. **Daten** hochladen oder laden  
     2. **Visualisierung** der Rohdaten  
     3. **ML-Tutorial** zur Einführung  
-    4. **Vorverarbeitung** auswählen  
+    4. **Vorverarbeitung** der Daten  
     5. **K-Means** zur Segmentierung  
     6. **Analyse** und Ergebnisse bewerten
     """)
