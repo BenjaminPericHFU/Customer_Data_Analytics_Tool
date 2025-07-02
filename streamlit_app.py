@@ -39,7 +39,7 @@ with st.sidebar:
     3. **ML-Tutorial** zur Einführung  
     4. **Vorverarbeitung** der Daten  
     5. **K-Means** zur Segmentierung  
-    6. **Analyse** und Ergebnisse bewerten
+    6. **Analyse** der Ergebnisse 
     """)
     st.divider()
 
