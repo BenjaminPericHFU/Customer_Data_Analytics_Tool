@@ -299,11 +299,11 @@ with tabs[3]:
 
         # Mapping von Anzeige-Label zu numerischem Sigma-Level
         sigma_options = {
-            "±2σ": 2,
-            "±3σ": 3,
-            "±4σ": 4,
-            "±5σ": 5,
-            "±6σ": 6
+            "±2 σ": 2,
+            "±3 σ": 3,
+            "±4 σ": 4,
+            "±5 σ": 5,
+            "±6 σ": 6
         }
         
         # Radio-Buttons mit formatierten Labels
