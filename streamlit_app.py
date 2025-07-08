@@ -71,45 +71,46 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Tutorial", "Datenvorverarbeitung"
 # ---------------------------------------------------------------------------------------------------
 with tabs[0]:
     st.subheader("Datensatz einlesen:")
-    # st.markdown("Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden")
 
-    use_custom = st.checkbox("Testdaten laden? (Eigene Daten hinzufügen oder vorgefertigten Datensatz verwenden)", value=True)
+    dataset_source = st.radio(
+        "**Wähle Datenquelle:**",
+        options=["Testdaten verwenden", "Eigenen Datensatz hochladen"],
+        index=0,
+        horizontal=True
+    )
 
     df_work = None
-    
-    n_cols = 10  # maximale Spaltenanzahl für Anzeige
+    n_cols = 10
 
-    if use_custom:
-        st.info("Testdatensatz names `daten.csv` wird verwendet.")
+    if dataset_source == "Testdaten verwenden":
+        st.info("Testdatensatz namens `daten.csv` wird verwendet.")
         try:
             df = pd.read_csv("data/daten.csv", sep=';')
             df_work = df.copy()
             st.success("Datensatz wurde erfolgreich eingeladen.")
         except Exception as e:
-            st.error(f"Could not load custom dataset: {e}")
-    else:
-        uploaded_file = st.file_uploader("Upload your CSV file (nur CSV mit ';' als Separator)", type=["csv"])
+            st.error(f"Fehler beim Laden des Testdatensatzes: {e}")
+
+    elif dataset_source == "Eigenen Datensatz hochladen":
+        uploaded_file = st.file_uploader("Lade deine CSV-Datei hoch (mit `;` als Separator)", type=["csv"])
         if uploaded_file is not None:
             try:
                 df = pd.read_csv(uploaded_file, sep=';')
                 df_work = df.copy()
                 st.success("Datensatz wurde erfolgreich eingeladen.")
             except Exception as e:
-                st.error(f"Error reading the uploaded file: {e}")
+                st.error(f"Fehler beim Lesen der Datei: {e}")
 
     if df_work is not None:
-
         df_work = df_work.dropna()
         st.divider()
         st.subheader("Datensatz als Tabelle:")
-        max_cols = min(n_cols, len(df_work.columns))
-        st.dataframe(df_work)
+        st.dataframe(df_work.iloc[:, :n_cols])
         st.divider()
         st.subheader("Statistik zu Datensatz:")
         st.dataframe(df_work.describe())
 
-        
-        # Klassifikation nach Anzahl eindeutiger Werte (für spätere Visualisierung)
+        # Spaltenklassifikation für spätere Visualisierung
         column_classification = {"xy": [], "hue": []}
         for col in df_work.columns:
             nunique = df_work[col].nunique()
