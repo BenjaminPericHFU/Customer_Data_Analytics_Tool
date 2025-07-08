@@ -295,11 +295,14 @@ with tabs[3]:
               🧘‍♂️ Ideal, wenn du nur ganz große Ausreißer entfernen möchtest.
             """, unsafe_allow_html=True)
 
+        
+
         sigma_level = st.radio(
             label="**Wähle das Sigma-Level für die Ausreißer-Erkennung:**",
             options=[2, 3, 4, 5, 6],
-            index=1,  # entspricht Sigma = 3
-            horizontal=True
+            index=2,  # entspricht ±3σ
+            horizontal=True,
+            format_func=lambda x: f"±{x}σ"
         )
         
         st.divider()
