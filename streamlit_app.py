@@ -297,13 +297,25 @@ with tabs[3]:
 
         
 
-        sigma_level = st.radio(
+        # Mapping von Anzeige-Label zu numerischem Sigma-Level
+        sigma_options = {
+            "±2σ": 2,
+            "±3σ": 3,
+            "±4σ": 4,
+            "±5σ": 5,
+            "±6σ": 6
+        }
+        
+        # Radio-Buttons mit formatierten Labels
+        selection = st.radio(
             label="**Wähle das Sigma-Level für die Ausreißer-Erkennung:**",
-            options=[2, 3, 4, 5, 6],
-            index=2,  # entspricht ±3σ
-            horizontal=True,
-            format_func=lambda x: f"±{x}σ"
+            options=list(sigma_options.keys()),
+            index=1,  # entspricht ±3σ
+            horizontal=True
         )
+        
+        # Zugriff auf den numerischen Wert
+        sigma_level = sigma_options[selection]
         
         st.divider()
         
