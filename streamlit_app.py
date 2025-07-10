@@ -69,6 +69,34 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Tutorial", "Datenvorverarbeitung"
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
+import io
+import csv
+
+def detect_csv_separator(file):
+    try:
+        file.seek(0)
+        sample = file.read(1024).decode('utf-8', errors='ignore')
+        file.seek(0)
+        dialect = csv.Sniffer().sniff(sample)
+        return dialect.delimiter
+    except Exception:
+        return ';'  # Fallback
+
+def load_file(uploaded_file):
+    filename = uploaded_file.name.lower()
+
+    if filename.endswith(('.xls', '.xlsx')):
+        df = pd.read_excel(uploaded_file)
+    elif filename.endswith('.csv'):
+        sep = detect_csv_separator(uploaded_file)
+        df = pd.read_csv(uploaded_file, sep=sep)
+    elif filename.endswith('.txt'):
+        # Versuch Tab als Standard-Trenner
+        df = pd.read_csv(uploaded_file, sep='\t')
+    else:
+        raise ValueError("Dateiformat wird nicht unterstützt.")
+    return df
+
 with tabs[0]:
     st.subheader("Datensatz einlesen:")
 
@@ -83,8 +111,9 @@ with tabs[0]:
     n_cols = 10
 
     if dataset_source == "Testdaten verwenden":
-        st.info("Testdatensatz namens `daten.csv` wird verwendet.")
+        st.info("Testdatensatz namens daten.csv wird verwendet.")
         try:
+            # Hier kannst du auch detect_csv_separator nutzen, wenn gewünscht
             df = pd.read_csv("data/daten.csv", sep=';')
             df_work = df.copy()
             st.success("Datensatz wurde erfolgreich eingeladen.")
@@ -92,10 +121,10 @@ with tabs[0]:
             st.error(f"Fehler beim Laden des Testdatensatzes: {e}")
 
     elif dataset_source == "Eigenen Datensatz hochladen":
-        uploaded_file = st.file_uploader("Lade deine CSV-Datei hoch (mit `;` als Separator)", type=["csv"])
+        uploaded_file = st.file_uploader("Datei hochladen (csv, xls, xlsx, txt)", type=["csv", "xls", "xlsx", "txt"])
         if uploaded_file is not None:
             try:
-                df = pd.read_csv(uploaded_file, sep=';')
+                df = load_file(uploaded_file)
                 df_work = df.copy()
                 st.success("Datensatz wurde erfolgreich eingeladen.")
             except Exception as e:
@@ -110,7 +139,7 @@ with tabs[0]:
         st.subheader("Statistik zu Datensatz:")
         st.dataframe(df_work.describe())
 
-        # Spaltenklassifikation für spätere Visualisierung
+        # Spaltenklassifikation
         column_classification = {"xy": [], "hue": []}
         for col in df_work.columns:
             nunique = df_work[col].nunique()
