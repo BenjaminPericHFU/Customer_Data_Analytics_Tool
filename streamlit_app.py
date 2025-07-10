@@ -82,22 +82,52 @@ with tabs[0]:
     df_work = None
     n_cols = 10
 
+    def detect_separator(file_like):
+        # Lese einen kleinen Ausschnitt zum Sniffen
+        sample = file_like.read(2048)
+        file_like.seek(0)  # Wichtig: zurücksetzen
+        try:
+            sample_text = sample.decode("utf-8")
+            sniffer = csv.Sniffer()
+            dialect = sniffer.sniff(sample_text)
+            return dialect.delimiter
+        except Exception:
+            return ";"  # Fallback
+
+    def read_uploaded_file(uploaded_file):
+        file_type = uploaded_file.name.split(".")[-1].lower()
+
+        if file_type in ["xls", "xlsx"]:
+            df = pd.read_excel(uploaded_file)
+        elif file_type in ["csv", "txt"]:
+            sep = detect_separator(uploaded_file)
+            df = pd.read_csv(uploaded_file, sep=sep, encoding="utf-8")
+        else:
+            st.error("Dateiformat wird nicht unterstützt.")
+            return None
+        return df
+
     if dataset_source == "Testdaten verwenden":
         st.info("Testdatensatz namens `daten.csv` wird verwendet.")
         try:
-            df = pd.read_csv("data/daten.csv", sep=';')
-            df_work = df.copy()
-            st.success("Datensatz wurde erfolgreich eingeladen.")
+            with open("data/daten.csv", "rb") as f:
+                sep = detect_separator(f)
+            df_work = pd.read_csv("data/daten.csv", sep=sep, encoding="utf-8")
+            st.success(f"Datensatz wurde erfolgreich eingeladen. (Separator: `{sep}`)")
         except Exception as e:
             st.error(f"Fehler beim Laden des Testdatensatzes: {e}")
 
     elif dataset_source == "Eigenen Datensatz hochladen":
-        uploaded_file = st.file_uploader("Lade deine CSV-Datei hoch (mit `;` als Separator)", type=["csv"])
+        uploaded_file = st.file_uploader(
+            "Lade deine Datei hoch (.csv, .txt, .xls, .xlsx)",
+            type=["csv", "txt", "xls", "xlsx"]
+        )
         if uploaded_file is not None:
             try:
-                df = pd.read_csv(uploaded_file, sep=';')
-                df_work = df.copy()
-                st.success("Datensatz wurde erfolgreich eingeladen.")
+                df = read_uploaded_file(uploaded_file)
+                if df is not None:
+                    df_work = df.copy()
+                    st.success("Datensatz wurde erfolgreich eingeladen.")
             except Exception as e:
                 st.error(f"Fehler beim Lesen der Datei: {e}")
 
