@@ -69,53 +69,6 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Tutorial", "Datenvorverarbeitung"
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
-import csv
-import io
-def read_csv_auto(file) -> pd.DataFrame:
-    try:
-        content = file.read()
-    except:
-        content = file.getvalue()
-    
-    # Encoding automatisch erkennen
-    for encoding in ['utf-8', 'latin1', 'ISO-8859-1']:
-        try:
-            decoded = content.decode(encoding)
-            break
-        except UnicodeDecodeError:
-            continue
-    else:
-        raise ValueError("Encoding konnte nicht erkannt werden.")
-    
-    # Trennzeichen automatisch erkennen
-    sniffer = csv.Sniffer()
-    try:
-        dialect = sniffer.sniff(decoded[:1000])
-        sep = dialect.delimiter
-    except Exception:
-        sep = ','  # Fallback
-
-    # In DataFrame laden
-    df = pd.read_csv(io.StringIO(decoded), sep=sep)
-    return df
-
-def read_excel_auto(file) -> pd.DataFrame:
-    try:
-        return pd.read_excel(file, engine='openpyxl')  # .xlsx
-    except:
-        return pd.read_excel(file, engine='xlrd')      # .xls fallback
-
-def read_uploaded_file(uploaded_file) -> pd.DataFrame:
-    file_name = uploaded_file.name.lower()
-    
-    if file_name.endswith(('.csv', '.txt')):
-        return read_csv_auto(uploaded_file)
-    elif file_name.endswith(('.xlsx', '.xls')):
-        return read_excel_auto(uploaded_file)
-    else:
-        raise ValueError("Nicht unterstütztes Dateiformat.")
-
-# Streamlit-Tab:
 with tabs[0]:
     st.subheader("Datensatz einlesen:")
 
@@ -139,10 +92,10 @@ with tabs[0]:
             st.error(f"Fehler beim Laden des Testdatensatzes: {e}")
 
     elif dataset_source == "Eigenen Datensatz hochladen":
-        uploaded_file = st.file_uploader("Lade deine CSV- oder Excel-Datei hoch", type=["csv", "xlsx", "xls", "txt"])
+        uploaded_file = st.file_uploader("Lade deine CSV-Datei hoch (mit `;` als Separator)", type=["csv"])
         if uploaded_file is not None:
             try:
-                df = read_uploaded_file(uploaded_file)
+                df = pd.read_csv(uploaded_file, sep=';')
                 df_work = df.copy()
                 st.success("Datensatz wurde erfolgreich eingeladen.")
             except Exception as e:
