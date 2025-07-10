@@ -69,6 +69,10 @@ tabs = st.tabs(["Daten", "Visualisierung", "ML-Tutorial", "Datenvorverarbeitung"
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
+import io
+import csv
+import chardet
+
 with tabs[0]:
     st.subheader("Datensatz einlesen:")
 
@@ -82,22 +86,61 @@ with tabs[0]:
     df_work = None
     n_cols = 10
 
+    def detect_encoding(file_bytes):
+        result = chardet.detect(file_bytes)
+        return result["encoding"] or "utf-8"
+
+    def detect_separator(sample, encoding="utf-8"):
+        try:
+            sniffer = csv.Sniffer()
+            dialect = sniffer.sniff(sample.decode(encoding))
+            return dialect.delimiter
+        except Exception:
+            return ';'  # Fallback
+
+    def read_uploaded_file(uploaded_file):
+        file_type = uploaded_file.name.split(".")[-1].lower()
+        file_bytes = uploaded_file.read()
+        uploaded_file.seek(0)
+
+        encoding = detect_encoding(file_bytes)
+
+        if file_type in ["xls", "xlsx"]:
+            df = pd.read_excel(uploaded_file)
+        elif file_type in ["csv", "txt"]:
+            # Separator erkennen aus den ersten 2048 Bytes
+            sample = file_bytes[:2048]
+            sep = detect_separator(sample, encoding)
+            df = pd.read_csv(io.BytesIO(file_bytes), sep=sep, encoding=encoding)
+        else:
+            st.error("Dateiformat wird nicht unterstützt.")
+            return None
+        return df
+
     if dataset_source == "Testdaten verwenden":
         st.info("Testdatensatz namens `daten.csv` wird verwendet.")
         try:
-            df = pd.read_csv("data/daten.csv", sep=';')
+            with open("data/daten.csv", "rb") as f:
+                file_bytes = f.read()
+                encoding = detect_encoding(file_bytes)
+                sep = detect_separator(file_bytes[:2048], encoding)
+                df = pd.read_csv("data/daten.csv", sep=sep, encoding=encoding)
             df_work = df.copy()
-            st.success("Datensatz wurde erfolgreich eingeladen.")
+            st.success(f"Datensatz wurde erfolgreich eingeladen. (Separator: `{sep}`)")
         except Exception as e:
             st.error(f"Fehler beim Laden des Testdatensatzes: {e}")
 
     elif dataset_source == "Eigenen Datensatz hochladen":
-        uploaded_file = st.file_uploader("Lade deine CSV-Datei hoch (mit `;` als Separator)", type=["csv"])
+        uploaded_file = st.file_uploader(
+            "Lade deine Datei hoch (.csv, .txt, .xls, .xlsx)",
+            type=["csv", "txt", "xls", "xlsx"]
+        )
         if uploaded_file is not None:
             try:
-                df = pd.read_csv(uploaded_file, sep=';')
-                df_work = df.copy()
-                st.success("Datensatz wurde erfolgreich eingeladen.")
+                df = read_uploaded_file(uploaded_file)
+                if df is not None:
+                    df_work = df.copy()
+                    st.success("Datensatz wurde erfolgreich eingeladen.")
             except Exception as e:
                 st.error(f"Fehler beim Lesen der Datei: {e}")
 
