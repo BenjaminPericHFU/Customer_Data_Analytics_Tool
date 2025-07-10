@@ -134,7 +134,7 @@ with tabs[0]:
         df_work = df_work.dropna()
         st.divider()
         st.subheader("Datensatz als Tabelle:")
-        st.dataframe(df_work.iloc[:, :n_cols])
+        st.dataframe(df_work.iloc[:, :])
         st.divider()
         st.subheader("Statistik zu Datensatz:")
         st.dataframe(df_work.describe())
