@@ -6,6 +6,4 @@ scikit-learn
 seaborn 
 openpyxl
 plotly
-io
-csv
-xlrd
+
