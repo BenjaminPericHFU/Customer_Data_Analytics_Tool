@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import Counter
 import plotly.express as px
-
+import csv
 
 # Logo ganz oben zentriert
 # st.image("assets/Kompetenzzentrum_Logo.png", width=500)
