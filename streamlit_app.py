@@ -162,39 +162,60 @@ with tabs[1]:
     group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="group_tab1")
     color_arg_dist = None if group_col == "Keine" else group_col
 
-    fig_dist = px.histogram(df, x=dist_col, color=color_arg_dist)
+    # Für Verteilungsplot: Farbspalte ggf. als String konvertieren
+    df_dist = df.copy()
+    if color_arg_dist is not None and color_arg_dist in df_dist.columns:
+        if pd.api.types.is_numeric_dtype(df_dist[color_arg_dist]):
+            df_dist[color_arg_dist] = df_dist[color_arg_dist].astype(str)
+
+    fig_dist = px.histogram(df_dist, x=dist_col, color=color_arg_dist)
     fig_dist.update_layout(barmode='overlay')  # oder 'group', je nach Präferenz
-    fig_dist.update_traces(opacity=0.75)  # bessere Lesbarkeit bei überlagerung
+    fig_dist.update_traces(opacity=0.75)  # bessere Lesbarkeit bei Überlagerung
 
     st.plotly_chart(fig_dist, use_container_width=True)
 
     # --- Trennlinie ---
     st.divider()
-    
+
     # --- Vergleich zweier Variablen ---
     st.subheader("Beziehung zwischen Variablen visualisieren")
-    
+
     x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
     y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
     hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
-    
+
     plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
     color_arg = None if hue_col == "Keine" else hue_col
-    
-    # Benutzerdefinierte, klare Farbpalette – z. B. Plotly, D3 oder Tableau-Schema
+
+    # Benutzerdefinierte, klare Farbpalette – z. B. Plotly, D3 oder Tableau-Schema
     custom_colors = [
-        "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", 
-        "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", 
+        "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
+        "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
         "#bcbd22", "#17becf"
     ]
-    
+
+    df_plot = df.copy()
+
+    # Farbspalte als String, wenn numerisch
+    if color_arg is not None and color_arg in df_plot.columns:
+        if pd.api.types.is_numeric_dtype(df_plot[color_arg]):
+            df_plot[color_arg] = df_plot[color_arg].astype(str)
+
+    # Für Balken- und Scatterplots: x-Achse ggf. als String konvertieren, damit Kategorien erkannt werden
+    if plot_type in ["Balkendiagramm", "Scatterplot"]:
+        if pd.api.types.is_numeric_dtype(df_plot[x_col]):
+            df_plot[x_col] = df_plot[x_col].astype(str)
+
+    # Für y-Achse normalerweise numerisch lassen (bei Balkendiagramm relevant), keine Konvertierung
+
+    # Plot-Erstellung
     if plot_type == "Balkendiagramm":
-        fig = px.bar(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
+        fig = px.bar(df_plot, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
     elif plot_type == "Scatterplot":
-        fig = px.scatter(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
+        fig = px.scatter(df_plot, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
     elif plot_type == "Liniendiagramm":
-        fig = px.line(df, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
-    
+        fig = px.line(df_plot, x=x_col, y=y_col, color=color_arg, color_discrete_sequence=custom_colors)
+
     st.plotly_chart(fig, use_container_width=True)
 
 
