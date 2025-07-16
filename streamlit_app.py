@@ -72,7 +72,6 @@ tabs = st.tabs(["Daten", "Visualisierung", "Datenvorverarbeitung", "ML-Tutorial"
 import io
 import csv
 
-# Funktion zum Erkennen des CSV-Trennzeichens
 def detect_csv_separator(file):
     try:
         file.seek(0)
@@ -83,27 +82,21 @@ def detect_csv_separator(file):
     except Exception:
         return ';'  # Fallback
 
-# Funktion zum Laden der Datei
 def load_file(uploaded_file):
     filename = uploaded_file.name.lower()
+
     if filename.endswith(('.xls', '.xlsx')):
         df = pd.read_excel(uploaded_file)
     elif filename.endswith('.csv'):
         sep = detect_csv_separator(uploaded_file)
         df = pd.read_csv(uploaded_file, sep=sep)
     elif filename.endswith('.txt'):
+        # Versuch Tab als Standard-Trenner
         df = pd.read_csv(uploaded_file, sep='\t')
     else:
         raise ValueError("Dateiformat wird nicht unterstützt.")
     return df
 
-# Initialisiere session_state für data_status und df_work, falls nicht vorhanden
-if 'data_status' not in st.session_state:
-    st.session_state.data_status = "not_loaded"
-if 'df_work' not in st.session_state:
-    st.session_state.df_work = None
-
-# Tab für das Einlesen des Datensatzes
 with tabs[0]:
     st.subheader("Datensatz einlesen:")
 
@@ -114,15 +107,17 @@ with tabs[0]:
         horizontal=True
     )
 
+    df_work = None
+    n_cols = 10
+
     if dataset_source == "Testdaten verwenden":
         st.info("Testdatensatz namens daten.csv wird verwendet.")
         try:
+            # Hier kannst du auch detect_csv_separator nutzen, wenn gewünscht
             df = pd.read_csv("data/daten.csv", sep=';')
-            st.session_state.df_work = df.copy()
-            st.session_state.data_status = "loaded"  # Setze Status auf geladen
+            df_work = df.copy()
             st.success("Datensatz wurde erfolgreich eingeladen.")
         except Exception as e:
-            st.session_state.data_status = "not_loaded"  # Setze Status zurück
             st.error(f"Fehler beim Laden des Testdatensatzes: {e}")
 
     elif dataset_source == "Eigenen Datensatz hochladen":
@@ -130,94 +125,85 @@ with tabs[0]:
         if uploaded_file is not None:
             try:
                 df = load_file(uploaded_file)
-                st.session_state.df_work = df.copy()
-                st.session_state.data_status = "loaded"  # Setze Status auf geladen
+                df_work = df.copy()
                 st.success("Datensatz wurde erfolgreich eingeladen.")
             except Exception as e:
-                st.session_state.data_status = "not_loaded"  # Setze Status zurück
                 st.error(f"Fehler beim Lesen der Datei: {e}")
-        else:
-            st.session_state.data_status = "not_loaded"  # Keine Datei hochgeladen
 
-    # Zeige Datensatz und Statistik, wenn Daten geladen sind
-    if st.session_state.data_status == "loaded" and st.session_state.df_work is not None:
-        st.session_state.df_work = st.session_state.df_work.dropna()
+    if df_work is not None:
+        df_work = df_work.dropna()
         st.divider()
         st.subheader("Datensatz als Tabelle:")
-        st.dataframe(st.session_state.df_work.iloc[:, :])
+        st.dataframe(df_work.iloc[:, :])
         st.divider()
         st.subheader("Statistik zu Datensatz:")
-        st.dataframe(st.session_state.df_work.describe())
+        st.dataframe(df_work.describe())
 
         # Spaltenklassifikation
         column_classification = {"xy": [], "hue": []}
-        for col in st.session_state.df_work.columns:
-            nunique = st.session_state.df_work[col].nunique()
-            if pd.api.types.is_numeric_dtype(st.session_state.df_work[col]) and nunique > 5:
+        for col in df_work.columns:
+            nunique = df_work[col].nunique()
+            if pd.api.types.is_numeric_dtype(df_work[col]) and nunique > 5:
                 column_classification["xy"].append(col)
             elif 1 < nunique <= 5:
                 column_classification["hue"].append(col)
 
 
+
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
-# Tab für interaktive Visualisierung
 with tabs[1]:
     st.header("📊 Interaktive Visualisierung")
 
-    # Prüfe, ob Daten geladen sind
-    if st.session_state.data_status == "loaded" and st.session_state.df_work is not None:
-        # --- Verteilung einer Einzelvariablen ---
-        st.subheader("Verteilung der Daten analysieren")
+    # --- Verteilung einer Einzelvariablen ---
+    st.subheader("Verteilung der Daten analysieren")
 
-        dist_col = st.selectbox("Variable für Verteilung wählen:", st.session_state.column_classification["xy"], key="dist_col_tab1")
-        group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + st.session_state.column_classification["hue"], key="group_tab1")
-        color_arg_dist = None if group_col == "Keine" else group_col
+    dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
+    group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="group_tab1")
+    color_arg_dist = None if group_col == "Keine" else group_col
 
-        df_dist = st.session_state.df_work.copy()
-        if color_arg_dist is not None and color_arg_dist in df_dist.columns:
-            if pd.api.types.is_numeric_dtype(df_dist[color_arg_dist]):
-                df_dist[color_arg_dist] = df_dist[color_arg_dist].astype(str)
+    df_dist = df.copy()
+    if color_arg_dist is not None and color_arg_dist in df_dist.columns:
+        if pd.api.types.is_numeric_dtype(df_dist[color_arg_dist]):
+            df_dist[color_arg_dist] = df_dist[color_arg_dist].astype(str)
 
-        fig_dist = px.histogram(df_dist, x=dist_col, color=color_arg_dist)
-        fig_dist.update_layout(barmode='overlay')  # oder 'group', je nach Präferenz
-        fig_dist.update_traces(opacity=0.75)
+    fig_dist = px.histogram(df_dist, x=dist_col, color=color_arg_dist)
+    fig_dist.update_layout(barmode='overlay')  # oder 'group', je nach Präferenz
+    fig_dist.update_traces(opacity=0.75)
 
-        st.plotly_chart(fig_dist, use_container_width=True)
+    st.plotly_chart(fig_dist, use_container_width=True)
 
-        # --- Trennlinie ---
-        st.divider()
+    # --- Trennlinie ---
+    st.divider()
 
-        # --- Vergleich zweier Variablen ---
-        st.subheader("Beziehung zwischen Variablen visualisieren")
+    # --- Vergleich zweier Variablen ---
+    st.subheader("Beziehung zwischen Variablen visualisieren")
 
-        x_col = st.selectbox("X-Achse wählen:", st.session_state.column_classification["xy"], key="x_axis_tab1")
-        y_col = st.selectbox("Y-Achse wählen:", st.session_state.column_classification["xy"], key="y_axis_tab1")
-        hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + st.session_state.column_classification["hue"], key="hue_tab1")
+    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
+    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
+    hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
 
-        plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
-        color_arg = None if hue_col == "Keine" else hue_col
+    plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
+    color_arg = None if hue_col == "Keine" else hue_col
 
-        df_plot = st.session_state.df_work.copy()
+    df_plot = df.copy()
 
-        if color_arg is not None and color_arg in df_plot.columns:
-            if pd.api.types.is_numeric_dtype(df_plot[color_arg]):
-                df_plot[color_arg] = df_plot[color_arg].astype(str)
+    if color_arg is not None and color_arg in df_plot.columns:
+        if pd.api.types.is_numeric_dtype(df_plot[color_arg]):
+            df_plot[color_arg] = df_plot[color_arg].astype(str)
 
-        if plot_type in ["Balkendiagramm", "Scatterplot"]:
-            if pd.api.types.is_numeric_dtype(df_plot[x_col]):
-                df_plot[x_col] = df_plot[x_col].astype(str)
+    if plot_type in ["Balkendiagramm", "Scatterplot"]:
+        if pd.api.types.is_numeric_dtype(df_plot[x_col]):
+            df_plot[x_col] = df_plot[x_col].astype(str)
 
-        if plot_type == "Balkendiagramm":
-            fig = px.bar(df_plot, x=x_col, y=y_col, color=color_arg)
-        elif plot_type == "Scatterplot":
-            fig = px.scatter(df_plot, x=x_col, y=y_col, color=color_arg)
-        elif plot_type == "Liniendiagramm":
-            fig = px.line(df_plot, x=x_col, y=y_col, color=color_arg)
+    if plot_type == "Balkendiagramm":
+        fig = px.bar(df_plot, x=x_col, y=y_col, color=color_arg)
+    elif plot_type == "Scatterplot":
+        fig = px.scatter(df_plot, x=x_col, y=y_col, color=color_arg)
+    elif plot_type == "Liniendiagramm":
+        fig = px.line(df_plot, x=x_col, y=y_col, color=color_arg)
 
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.warning("Keine Daten geladen. Bitte lade zuerst einen Datensatz im Tab 'Datensatz einlesen'.")
+    st.plotly_chart(fig, use_container_width=True)
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
@@ -606,6 +592,3 @@ with tabs[5]:
             file_name="cluster_data.csv",
             mime="text/csv"
         )
-
-
-
