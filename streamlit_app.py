@@ -211,161 +211,157 @@ with tabs[1]:
     
         st.plotly_chart(fig, use_container_width=True)
     else: 
-        st.warning("Daten wurden noch nicht eingeladen.")
+        st.warning("Daten wurden noch nicht hochgeladen.")
         
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[2]:
     st.header("🔍 Autonome Ausreißer-Filterung mit Six Sigma Methode")
+    
+    st.markdown("""
+        ### 🔢 **Was bedeuten die Sigma-Level?**
+        
+        Das **Sigma-Level** bestimmt, wie streng die Ausreißer-Erkennung ist, also wie stark sich Werte vom Durchschnitt unterscheiden müssen, um als Ausreißer erkannt zu werden:
+        
+        - **2 Sigma (±2 Standardabweichungen)**  
+          ⚠️ **Strenger Filter** – Es werden schon viele Werte als Ausreißer erkannt, auch wenn sie nur etwas ungewöhnlich sind.  
+          👉 Gut, wenn du möglichst viele Auffälligkeiten finden möchtest.
+        
+        - **3 Sigma (±3 Standardabweichungen)**  
+          ✔️ **Üblicher Standard** – Es werden nur Werte entfernt, die wirklich deutlich anders sind als der Durchschnitt.  
+          🔄 Häufig die beste Wahl, weil es eine gute Balance bietet.
+        
+        - **6 Sigma (±6 Standardabweichungen)**  
+          🛡️ **Sehr lockerer Filter** – Nur sehr extreme Ausreißer werden erkannt, alles, was sich leicht unterscheidet, bleibt drin.  
+          🧘‍♂️ Ideal, wenn du nur ganz große Ausreißer entfernen möchtest.
+        """, unsafe_allow_html=True)
 
-    if df_work is None:
-        st.warning("Bitte lade zuerst einen Datensatz im Tab 'Daten' hoch.")
+    
+
+    # Mapping von Anzeige-Label zu numerischem Sigma-Level
+    sigma_options = {
+        "±2 σ": 2,
+        "±3 σ": 3,
+        "±4 σ": 4,
+        "±5 σ": 5,
+        "±6 σ": 6
+    }
+    
+    # Radio-Buttons mit formatierten Labels
+    selection = st.radio(
+        label="**Wähle das Sigma-Level für die Ausreißer-Erkennung:**",
+        options=list(sigma_options.keys()),
+        index=1,  # entspricht ±3σ
+        horizontal=True
+    )
+    
+    # Zugriff auf den numerischen Wert
+    sigma_level = sigma_options[selection]
+    
+    st.divider()
+    
+    st.markdown("### Spalten auswählen, bei denen die automatische Six Sigma Filterung angewandt wird:")
+
+    selected_columns = []
+
+    for col_name in column_classification["xy"]:
+        c1, c2 = st.columns([3, 2])
+
+        with c1:
+            checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")
+
+        with c2:
+            if checked:
+                mean = df_work[col_name].mean()
+                std = df_work[col_name].std()
+                lower_bound = mean - sigma_level * std
+                upper_bound = mean + sigma_level * std
+
+                mask_outliers = (df_work[col_name] < lower_bound) | (df_work[col_name] > upper_bound)
+                count_outliers = mask_outliers.sum()
+            else:
+                count_outliers = 0
+
+            st.markdown(
+                f"<div style='text-align: left;'>"
+                f"{col_name} — Ausreißer: <span style='font-weight: bold;'>{count_outliers}</span>"
+                f"</div>",
+                unsafe_allow_html=True,
+            )
+
+        if checked:
+            selected_columns.append(col_name)
+
+    # Falls keine Spalten ausgewählt wurden, setze df_filtered = df_work.copy()
+    if len(selected_columns) == 0:
+        st.info("Visualisierungen sind zu sehen, sobald eine Spalte ausgewählt wird.")
+        df_filtered = df_work.copy()
     else:
-        
-        st.markdown("""
-            ### 🔢 **Was bedeuten die Sigma-Level?**
-            
-            Das **Sigma-Level** bestimmt, wie streng die Ausreißer-Erkennung ist, also wie stark sich Werte vom Durchschnitt unterscheiden müssen, um als Ausreißer erkannt zu werden:
-            
-            - **2 Sigma (±2 Standardabweichungen)**  
-              ⚠️ **Strenger Filter** – Es werden schon viele Werte als Ausreißer erkannt, auch wenn sie nur etwas ungewöhnlich sind.  
-              👉 Gut, wenn du möglichst viele Auffälligkeiten finden möchtest.
-            
-            - **3 Sigma (±3 Standardabweichungen)**  
-              ✔️ **Üblicher Standard** – Es werden nur Werte entfernt, die wirklich deutlich anders sind als der Durchschnitt.  
-              🔄 Häufig die beste Wahl, weil es eine gute Balance bietet.
-            
-            - **6 Sigma (±6 Standardabweichungen)**  
-              🛡️ **Sehr lockerer Filter** – Nur sehr extreme Ausreißer werden erkannt, alles, was sich leicht unterscheidet, bleibt drin.  
-              🧘‍♂️ Ideal, wenn du nur ganz große Ausreißer entfernen möchtest.
-            """, unsafe_allow_html=True)
+        df_filtered = df_work.copy()
+        outlier_indices = set()
 
-        
+        for col in selected_columns:
+            mean = df_filtered[col].mean()
+            std = df_filtered[col].std()
+            lower_bound = mean - sigma_level * std
+            upper_bound = mean + sigma_level * std
 
-        # Mapping von Anzeige-Label zu numerischem Sigma-Level
-        sigma_options = {
-            "±2 σ": 2,
-            "±3 σ": 3,
-            "±4 σ": 4,
-            "±5 σ": 5,
-            "±6 σ": 6
-        }
-        
-        # Radio-Buttons mit formatierten Labels
-        selection = st.radio(
-            label="**Wähle das Sigma-Level für die Ausreißer-Erkennung:**",
-            options=list(sigma_options.keys()),
-            index=1,  # entspricht ±3σ
-            horizontal=True
-        )
-        
-        # Zugriff auf den numerischen Wert
-        sigma_level = sigma_options[selection]
+            mask_outliers = (df_filtered[col] < lower_bound) | (df_filtered[col] > upper_bound)
+            outlier_idx_col = df_filtered[mask_outliers].index
+
+            if len(outlier_idx_col) > 0:
+                outlier_indices.update(outlier_idx_col)
+
+        st.write(f"**Gesamtzahl eindeutiger Ausreißer (über alle ausgewählten Spalten): {len(outlier_indices)}**")
+        df_filtered = df_filtered.drop(index=outlier_indices)
+        st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_filtered)} Zeilen statt {len(df_work)}")
         
         st.divider()
-        
-        st.markdown("### Spalten auswählen, bei denen die automatische Six Sigma Filterung angewandt wird:")
 
-        selected_columns = []
+        # Visualisierung der ausgewählten Spalten mit Ausreißern
+        st.subheader("Scatterplots mit Ausreißer-Markierung")
 
-        for col_name in column_classification["xy"]:
-            c1, c2 = st.columns([3, 2])
+        for col in selected_columns:
+            mean = df_work[col].mean()
+            std = df_work[col].std()
+            lower_bound = mean - sigma_level * std
+            upper_bound = mean + sigma_level * std
 
-            with c1:
-                checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")
+            mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
 
-            with c2:
-                if checked:
-                    mean = df_work[col_name].mean()
-                    std = df_work[col_name].std()
-                    lower_bound = mean - sigma_level * std
-                    upper_bound = mean + sigma_level * std
+            if mask_outliers.any():
+                fig, ax = plt.subplots(figsize=(8, 2))
+                ax.scatter(df_work.loc[~mask_outliers, col], [1]*sum(~mask_outliers),
+                           color="blue", label="Normal", alpha=0.6)
+                ax.scatter(df_work.loc[mask_outliers, col], [1]*sum(mask_outliers),
+                           color="red", label="Ausreißer", alpha=0.8)
 
-                    mask_outliers = (df_work[col_name] < lower_bound) | (df_work[col_name] > upper_bound)
-                    count_outliers = mask_outliers.sum()
-                else:
-                    count_outliers = 0
+                ax.set_yticks([1])
+                ax.set_yticklabels([""])
+                ax.set_xlabel(col)
+                ax.set_title(f"Ausreißererkennung für '{col}' ({sigma_level}σ)")
 
-                st.markdown(
-                    f"<div style='text-align: left;'>"
-                    f"{col_name} — Ausreißer: <span style='font-weight: bold;'>{count_outliers}</span>"
-                    f"</div>",
-                    unsafe_allow_html=True,
-                )
+                handles, labels = ax.get_legend_handles_labels()
+                by_label = dict(zip(labels, handles))
+                ax.legend(by_label.values(), by_label.keys())
 
-            if checked:
-                selected_columns.append(col_name)
+                st.pyplot(fig)
 
-        # Falls keine Spalten ausgewählt wurden, setze df_filtered = df_work.copy()
-        if len(selected_columns) == 0:
-            st.info("Visualisierungen sind zu sehen, sobald eine Spalte ausgewählt wird.")
-            df_filtered = df_work.copy()
-        else:
-            df_filtered = df_work.copy()
-            outlier_indices = set()
-
-            for col in selected_columns:
-                mean = df_filtered[col].mean()
-                std = df_filtered[col].std()
-                lower_bound = mean - sigma_level * std
-                upper_bound = mean + sigma_level * std
-
-                mask_outliers = (df_filtered[col] < lower_bound) | (df_filtered[col] > upper_bound)
-                outlier_idx_col = df_filtered[mask_outliers].index
-
-                if len(outlier_idx_col) > 0:
-                    outlier_indices.update(outlier_idx_col)
-
-            st.write(f"**Gesamtzahl eindeutiger Ausreißer (über alle ausgewählten Spalten): {len(outlier_indices)}**")
-            df_filtered = df_filtered.drop(index=outlier_indices)
-            st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_filtered)} Zeilen statt {len(df_work)}")
-            
-            st.divider()
-
-            # Visualisierung der ausgewählten Spalten mit Ausreißern
-            st.subheader("Scatterplots mit Ausreißer-Markierung")
-
-            for col in selected_columns:
-                mean = df_work[col].mean()
-                std = df_work[col].std()
-                lower_bound = mean - sigma_level * std
-                upper_bound = mean + sigma_level * std
-
-                mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
-
-                if mask_outliers.any():
-                    fig, ax = plt.subplots(figsize=(8, 2))
-                    ax.scatter(df_work.loc[~mask_outliers, col], [1]*sum(~mask_outliers),
-                               color="blue", label="Normal", alpha=0.6)
-                    ax.scatter(df_work.loc[mask_outliers, col], [1]*sum(mask_outliers),
-                               color="red", label="Ausreißer", alpha=0.8)
-
-                    ax.set_yticks([1])
-                    ax.set_yticklabels([""])
-                    ax.set_xlabel(col)
-                    ax.set_title(f"Ausreißererkennung für '{col}' ({sigma_level}σ)")
-
-                    handles, labels = ax.get_legend_handles_labels()
-                    by_label = dict(zip(labels, handles))
-                    ax.legend(by_label.values(), by_label.keys())
-
-                    st.pyplot(fig)
-
-        st.markdown("---")
-        st.markdown("### 🧹 **Irrelevante Spalten vor der Analyse ausschließen**")
-        
-        columns_to_exclude = st.multiselect(
-            label="Wähle Sie Spalten aus, die **irrelevant** für die Ausreißer-Erkennung sind:",
-            options=df_filtered.columns.tolist(),
-            default=[],
-            help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
-        )
-        
-        df_filtered = df_filtered.drop(columns=columns_to_exclude)
-        
-        st.markdown("### 📊 Vorschau des bereinigten Datensatzes")
-        st.dataframe(df_filtered.head())
+    st.markdown("---")
+    st.markdown("### 🧹 **Irrelevante Spalten vor der Analyse ausschließen**")
+    
+    columns_to_exclude = st.multiselect(
+        label="Wähle Sie Spalten aus, die **irrelevant** für die Ausreißer-Erkennung sind:",
+        options=df_filtered.columns.tolist(),
+        default=[],
+        help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
+    )
+    
+    df_filtered = df_filtered.drop(columns=columns_to_exclude)
+    
+    st.markdown("### 📊 Vorschau des bereinigten Datensatzes")
+    st.dataframe(df_filtered.head())
 
 
 # ---------------------------------------------------------------------------------------------------
