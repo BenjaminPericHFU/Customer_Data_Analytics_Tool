@@ -11,7 +11,7 @@ import plotly.express as px
 # st.image("assets/Kompetenzzentrum_Logo.png", width=500)
 st.set_page_config(page_title="Meine App", layout="centered")
 
-
+daten_eingeladen = False
 
 # CSS für blaue Sidebar (#00B0DB)
 st.markdown("""
@@ -117,8 +117,10 @@ with tabs[0]:
             df = pd.read_csv("data/daten.csv", sep=';')
             df_work = df.copy()
             st.success("Datensatz wurde erfolgreich eingeladen.")
+            daten_eingeladen = True
         except Exception as e:
             st.error(f"Fehler beim Laden des Testdatensatzes: {e}")
+            daten_eingeladen = False
 
     elif dataset_source == "Eigenen Datensatz hochladen":
         uploaded_file = st.file_uploader("Datei hochladen (csv, xls, xlsx, txt)", type=["csv", "xls", "xlsx", "txt"])
@@ -127,8 +129,10 @@ with tabs[0]:
                 df = load_file(uploaded_file)
                 df_work = df.copy()
                 st.success("Datensatz wurde erfolgreich eingeladen.")
+                daten_eingeladen = True
             except Exception as e:
                 st.error(f"Fehler beim Lesen der Datei: {e}")
+                daten_eingeladen = False
 
     if df_work is not None:
         df_work = df_work.dropna()
