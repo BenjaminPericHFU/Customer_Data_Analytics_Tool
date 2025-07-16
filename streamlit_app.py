@@ -158,7 +158,9 @@ with tabs[0]:
 # ---------------------------------------------------------------------------------------------------
 with tabs[1]:
 
-    if daten_eingeladen == True:
+    if daten_eingeladen == False:
+        st.warning("Daten wurden noch nicht hochgeladen.")
+    else:
         st.header("📊 Interaktive Visualisierung")
     
         # --- Verteilung einer Einzelvariablen ---
@@ -210,8 +212,7 @@ with tabs[1]:
             fig = px.line(df_plot, x=x_col, y=y_col, color=color_arg)
     
         st.plotly_chart(fig, use_container_width=True)
-    else: 
-        st.warning("Daten wurden noch nicht hochgeladen.")
+    
         
 
 # ---------------------------------------------------------------------------------------------------
