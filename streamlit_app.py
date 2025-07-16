@@ -157,57 +157,62 @@ with tabs[0]:
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[1]:
-    st.header("📊 Interaktive Visualisierung")
 
-    # --- Verteilung einer Einzelvariablen ---
-    st.subheader("Verteilung der Daten analysieren")
-
-    dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
-    group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="group_tab1")
-    color_arg_dist = None if group_col == "Keine" else group_col
-
-    df_dist = df.copy()
-    if color_arg_dist is not None and color_arg_dist in df_dist.columns:
-        if pd.api.types.is_numeric_dtype(df_dist[color_arg_dist]):
-            df_dist[color_arg_dist] = df_dist[color_arg_dist].astype(str)
-
-    fig_dist = px.histogram(df_dist, x=dist_col, color=color_arg_dist)
-    fig_dist.update_layout(barmode='overlay')  # oder 'group', je nach Präferenz
-    fig_dist.update_traces(opacity=0.75)
-
-    st.plotly_chart(fig_dist, use_container_width=True)
-
-    # --- Trennlinie ---
-    st.divider()
-
-    # --- Vergleich zweier Variablen ---
-    st.subheader("Beziehung zwischen Variablen visualisieren")
-
-    x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
-    y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
-    hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
-
-    plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
-    color_arg = None if hue_col == "Keine" else hue_col
-
-    df_plot = df.copy()
-
-    if color_arg is not None and color_arg in df_plot.columns:
-        if pd.api.types.is_numeric_dtype(df_plot[color_arg]):
-            df_plot[color_arg] = df_plot[color_arg].astype(str)
-
-    if plot_type in ["Balkendiagramm", "Scatterplot"]:
-        if pd.api.types.is_numeric_dtype(df_plot[x_col]):
-            df_plot[x_col] = df_plot[x_col].astype(str)
-
-    if plot_type == "Balkendiagramm":
-        fig = px.bar(df_plot, x=x_col, y=y_col, color=color_arg)
-    elif plot_type == "Scatterplot":
-        fig = px.scatter(df_plot, x=x_col, y=y_col, color=color_arg)
-    elif plot_type == "Liniendiagramm":
-        fig = px.line(df_plot, x=x_col, y=y_col, color=color_arg)
-
-    st.plotly_chart(fig, use_container_width=True)
+    if daten_eingeladen == True:
+        st.header("📊 Interaktive Visualisierung")
+    
+        # --- Verteilung einer Einzelvariablen ---
+        st.subheader("Verteilung der Daten analysieren")
+    
+        dist_col = st.selectbox("Variable für Verteilung wählen:", column_classification["xy"], key="dist_col_tab1")
+        group_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="group_tab1")
+        color_arg_dist = None if group_col == "Keine" else group_col
+    
+        df_dist = df.copy()
+        if color_arg_dist is not None and color_arg_dist in df_dist.columns:
+            if pd.api.types.is_numeric_dtype(df_dist[color_arg_dist]):
+                df_dist[color_arg_dist] = df_dist[color_arg_dist].astype(str)
+    
+        fig_dist = px.histogram(df_dist, x=dist_col, color=color_arg_dist)
+        fig_dist.update_layout(barmode='overlay')  # oder 'group', je nach Präferenz
+        fig_dist.update_traces(opacity=0.75)
+    
+        st.plotly_chart(fig_dist, use_container_width=True)
+    
+        # --- Trennlinie ---
+        st.divider()
+    
+        # --- Vergleich zweier Variablen ---
+        st.subheader("Beziehung zwischen Variablen visualisieren")
+    
+        x_col = st.selectbox("X-Achse wählen:", column_classification["xy"], key="x_axis_tab1")
+        y_col = st.selectbox("Y-Achse wählen:", column_classification["xy"], key="y_axis_tab1")
+        hue_col = st.selectbox("Farbliche Gruppierung (optional):", ["Keine"] + column_classification["hue"], key="hue_tab1")
+    
+        plot_type = st.radio("Diagrammtyp wählen:", ["Balkendiagramm", "Scatterplot", "Liniendiagramm"], key="plot_type_tab1")
+        color_arg = None if hue_col == "Keine" else hue_col
+    
+        df_plot = df.copy()
+    
+        if color_arg is not None and color_arg in df_plot.columns:
+            if pd.api.types.is_numeric_dtype(df_plot[color_arg]):
+                df_plot[color_arg] = df_plot[color_arg].astype(str)
+    
+        if plot_type in ["Balkendiagramm", "Scatterplot"]:
+            if pd.api.types.is_numeric_dtype(df_plot[x_col]):
+                df_plot[x_col] = df_plot[x_col].astype(str)
+    
+        if plot_type == "Balkendiagramm":
+            fig = px.bar(df_plot, x=x_col, y=y_col, color=color_arg)
+        elif plot_type == "Scatterplot":
+            fig = px.scatter(df_plot, x=x_col, y=y_col, color=color_arg)
+        elif plot_type == "Liniendiagramm":
+            fig = px.line(df_plot, x=x_col, y=y_col, color=color_arg)
+    
+        st.plotly_chart(fig, use_container_width=True)
+    else: 
+        st.warning("Daten wurden noch nicht eingeladen.")
+        
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
