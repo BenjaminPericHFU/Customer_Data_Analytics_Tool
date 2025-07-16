@@ -157,7 +157,6 @@ with tabs[0]:
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[1]:
-
     if daten_eingeladen == False:
         st.warning("Daten wurden noch nicht hochgeladen.")
     else:
@@ -218,152 +217,155 @@ with tabs[1]:
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[2]:
-    st.header("🔍 Autonome Ausreißer-Filterung mit Six Sigma Methode")
-    
-    st.markdown("""
-        ### 🔢 **Was bedeuten die Sigma-Level?**
-        
-        Das **Sigma-Level** bestimmt, wie streng die Ausreißer-Erkennung ist, also wie stark sich Werte vom Durchschnitt unterscheiden müssen, um als Ausreißer erkannt zu werden:
-        
-        - **2 Sigma (±2 Standardabweichungen)**  
-          ⚠️ **Strenger Filter** – Es werden schon viele Werte als Ausreißer erkannt, auch wenn sie nur etwas ungewöhnlich sind.  
-          👉 Gut, wenn du möglichst viele Auffälligkeiten finden möchtest.
-        
-        - **3 Sigma (±3 Standardabweichungen)**  
-          ✔️ **Üblicher Standard** – Es werden nur Werte entfernt, die wirklich deutlich anders sind als der Durchschnitt.  
-          🔄 Häufig die beste Wahl, weil es eine gute Balance bietet.
-        
-        - **6 Sigma (±6 Standardabweichungen)**  
-          🛡️ **Sehr lockerer Filter** – Nur sehr extreme Ausreißer werden erkannt, alles, was sich leicht unterscheidet, bleibt drin.  
-          🧘‍♂️ Ideal, wenn du nur ganz große Ausreißer entfernen möchtest.
-        """, unsafe_allow_html=True)
-
-    
-
-    # Mapping von Anzeige-Label zu numerischem Sigma-Level
-    sigma_options = {
-        "±2 σ": 2,
-        "±3 σ": 3,
-        "±4 σ": 4,
-        "±5 σ": 5,
-        "±6 σ": 6
-    }
-    
-    # Radio-Buttons mit formatierten Labels
-    selection = st.radio(
-        label="**Wähle das Sigma-Level für die Ausreißer-Erkennung:**",
-        options=list(sigma_options.keys()),
-        index=1,  # entspricht ±3σ
-        horizontal=True
-    )
-    
-    # Zugriff auf den numerischen Wert
-    sigma_level = sigma_options[selection]
-    
-    st.divider()
-    
-    st.markdown("### Spalten auswählen, bei denen die automatische Six Sigma Filterung angewandt wird:")
-
-    selected_columns = []
-
-    for col_name in column_classification["xy"]:
-        c1, c2 = st.columns([3, 2])
-
-        with c1:
-            checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")
-
-        with c2:
-            if checked:
-                mean = df_work[col_name].mean()
-                std = df_work[col_name].std()
-                lower_bound = mean - sigma_level * std
-                upper_bound = mean + sigma_level * std
-
-                mask_outliers = (df_work[col_name] < lower_bound) | (df_work[col_name] > upper_bound)
-                count_outliers = mask_outliers.sum()
-            else:
-                count_outliers = 0
-
-            st.markdown(
-                f"<div style='text-align: left;'>"
-                f"{col_name} — Ausreißer: <span style='font-weight: bold;'>{count_outliers}</span>"
-                f"</div>",
-                unsafe_allow_html=True,
-            )
-
-        if checked:
-            selected_columns.append(col_name)
-
-    # Falls keine Spalten ausgewählt wurden, setze df_filtered = df_work.copy()
-    if len(selected_columns) == 0:
-        st.info("Visualisierungen sind zu sehen, sobald eine Spalte ausgewählt wird.")
-        df_filtered = df_work.copy()
+    if daten_eingeladen == False:
+        st.warning("Daten wurden noch nicht hochgeladen.")
     else:
-        df_filtered = df_work.copy()
-        outlier_indices = set()
-
-        for col in selected_columns:
-            mean = df_filtered[col].mean()
-            std = df_filtered[col].std()
-            lower_bound = mean - sigma_level * std
-            upper_bound = mean + sigma_level * std
-
-            mask_outliers = (df_filtered[col] < lower_bound) | (df_filtered[col] > upper_bound)
-            outlier_idx_col = df_filtered[mask_outliers].index
-
-            if len(outlier_idx_col) > 0:
-                outlier_indices.update(outlier_idx_col)
-
-        st.write(f"**Gesamtzahl eindeutiger Ausreißer (über alle ausgewählten Spalten): {len(outlier_indices)}**")
-        df_filtered = df_filtered.drop(index=outlier_indices)
-        st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_filtered)} Zeilen statt {len(df_work)}")
+        st.header("🔍 Autonome Ausreißer-Filterung mit Six Sigma Methode")
+        
+        st.markdown("""
+            ### 🔢 **Was bedeuten die Sigma-Level?**
+            
+            Das **Sigma-Level** bestimmt, wie streng die Ausreißer-Erkennung ist, also wie stark sich Werte vom Durchschnitt unterscheiden müssen, um als Ausreißer erkannt zu werden:
+            
+            - **2 Sigma (±2 Standardabweichungen)**  
+              ⚠️ **Strenger Filter** – Es werden schon viele Werte als Ausreißer erkannt, auch wenn sie nur etwas ungewöhnlich sind.  
+              👉 Gut, wenn du möglichst viele Auffälligkeiten finden möchtest.
+            
+            - **3 Sigma (±3 Standardabweichungen)**  
+              ✔️ **Üblicher Standard** – Es werden nur Werte entfernt, die wirklich deutlich anders sind als der Durchschnitt.  
+              🔄 Häufig die beste Wahl, weil es eine gute Balance bietet.
+            
+            - **6 Sigma (±6 Standardabweichungen)**  
+              🛡️ **Sehr lockerer Filter** – Nur sehr extreme Ausreißer werden erkannt, alles, was sich leicht unterscheidet, bleibt drin.  
+              🧘‍♂️ Ideal, wenn du nur ganz große Ausreißer entfernen möchtest.
+            """, unsafe_allow_html=True)
+    
+        
+    
+        # Mapping von Anzeige-Label zu numerischem Sigma-Level
+        sigma_options = {
+            "±2 σ": 2,
+            "±3 σ": 3,
+            "±4 σ": 4,
+            "±5 σ": 5,
+            "±6 σ": 6
+        }
+        
+        # Radio-Buttons mit formatierten Labels
+        selection = st.radio(
+            label="**Wähle das Sigma-Level für die Ausreißer-Erkennung:**",
+            options=list(sigma_options.keys()),
+            index=1,  # entspricht ±3σ
+            horizontal=True
+        )
+        
+        # Zugriff auf den numerischen Wert
+        sigma_level = sigma_options[selection]
         
         st.divider()
-
-        # Visualisierung der ausgewählten Spalten mit Ausreißern
-        st.subheader("Scatterplots mit Ausreißer-Markierung")
-
-        for col in selected_columns:
-            mean = df_work[col].mean()
-            std = df_work[col].std()
-            lower_bound = mean - sigma_level * std
-            upper_bound = mean + sigma_level * std
-
-            mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
-
-            if mask_outliers.any():
-                fig, ax = plt.subplots(figsize=(8, 2))
-                ax.scatter(df_work.loc[~mask_outliers, col], [1]*sum(~mask_outliers),
-                           color="blue", label="Normal", alpha=0.6)
-                ax.scatter(df_work.loc[mask_outliers, col], [1]*sum(mask_outliers),
-                           color="red", label="Ausreißer", alpha=0.8)
-
-                ax.set_yticks([1])
-                ax.set_yticklabels([""])
-                ax.set_xlabel(col)
-                ax.set_title(f"Ausreißererkennung für '{col}' ({sigma_level}σ)")
-
-                handles, labels = ax.get_legend_handles_labels()
-                by_label = dict(zip(labels, handles))
-                ax.legend(by_label.values(), by_label.keys())
-
-                st.pyplot(fig)
-
-    st.markdown("---")
-    st.markdown("### 🧹 **Irrelevante Spalten vor der Analyse ausschließen**")
+        
+        st.markdown("### Spalten auswählen, bei denen die automatische Six Sigma Filterung angewandt wird:")
     
-    columns_to_exclude = st.multiselect(
-        label="Wähle Sie Spalten aus, die **irrelevant** für die Ausreißer-Erkennung sind:",
-        options=df_filtered.columns.tolist(),
-        default=[],
-        help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
-    )
+        selected_columns = []
     
-    df_filtered = df_filtered.drop(columns=columns_to_exclude)
+        for col_name in column_classification["xy"]:
+            c1, c2 = st.columns([3, 2])
     
-    st.markdown("### 📊 Vorschau des bereinigten Datensatzes")
-    st.dataframe(df_filtered.head())
-
+            with c1:
+                checked = st.checkbox(col_name, value=False, key=f"chk_{col_name}")
+    
+            with c2:
+                if checked:
+                    mean = df_work[col_name].mean()
+                    std = df_work[col_name].std()
+                    lower_bound = mean - sigma_level * std
+                    upper_bound = mean + sigma_level * std
+    
+                    mask_outliers = (df_work[col_name] < lower_bound) | (df_work[col_name] > upper_bound)
+                    count_outliers = mask_outliers.sum()
+                else:
+                    count_outliers = 0
+    
+                st.markdown(
+                    f"<div style='text-align: left;'>"
+                    f"{col_name} — Ausreißer: <span style='font-weight: bold;'>{count_outliers}</span>"
+                    f"</div>",
+                    unsafe_allow_html=True,
+                )
+    
+            if checked:
+                selected_columns.append(col_name)
+    
+        # Falls keine Spalten ausgewählt wurden, setze df_filtered = df_work.copy()
+        if len(selected_columns) == 0:
+            st.info("Visualisierungen sind zu sehen, sobald eine Spalte ausgewählt wird.")
+            df_filtered = df_work.copy()
+        else:
+            df_filtered = df_work.copy()
+            outlier_indices = set()
+    
+            for col in selected_columns:
+                mean = df_filtered[col].mean()
+                std = df_filtered[col].std()
+                lower_bound = mean - sigma_level * std
+                upper_bound = mean + sigma_level * std
+    
+                mask_outliers = (df_filtered[col] < lower_bound) | (df_filtered[col] > upper_bound)
+                outlier_idx_col = df_filtered[mask_outliers].index
+    
+                if len(outlier_idx_col) > 0:
+                    outlier_indices.update(outlier_idx_col)
+    
+            st.write(f"**Gesamtzahl eindeutiger Ausreißer (über alle ausgewählten Spalten): {len(outlier_indices)}**")
+            df_filtered = df_filtered.drop(index=outlier_indices)
+            st.write(f"Datensatz nach Entfernung der Ausreißer enthält {len(df_filtered)} Zeilen statt {len(df_work)}")
+            
+            st.divider()
+    
+            # Visualisierung der ausgewählten Spalten mit Ausreißern
+            st.subheader("Scatterplots mit Ausreißer-Markierung")
+    
+            for col in selected_columns:
+                mean = df_work[col].mean()
+                std = df_work[col].std()
+                lower_bound = mean - sigma_level * std
+                upper_bound = mean + sigma_level * std
+    
+                mask_outliers = (df_work[col] < lower_bound) | (df_work[col] > upper_bound)
+    
+                if mask_outliers.any():
+                    fig, ax = plt.subplots(figsize=(8, 2))
+                    ax.scatter(df_work.loc[~mask_outliers, col], [1]*sum(~mask_outliers),
+                               color="blue", label="Normal", alpha=0.6)
+                    ax.scatter(df_work.loc[mask_outliers, col], [1]*sum(mask_outliers),
+                               color="red", label="Ausreißer", alpha=0.8)
+    
+                    ax.set_yticks([1])
+                    ax.set_yticklabels([""])
+                    ax.set_xlabel(col)
+                    ax.set_title(f"Ausreißererkennung für '{col}' ({sigma_level}σ)")
+    
+                    handles, labels = ax.get_legend_handles_labels()
+                    by_label = dict(zip(labels, handles))
+                    ax.legend(by_label.values(), by_label.keys())
+    
+                    st.pyplot(fig)
+    
+        st.markdown("---")
+        st.markdown("### 🧹 **Irrelevante Spalten vor der Analyse ausschließen**")
+        
+        columns_to_exclude = st.multiselect(
+            label="Wähle Sie Spalten aus, die **irrelevant** für die Ausreißer-Erkennung sind:",
+            options=df_filtered.columns.tolist(),
+            default=[],
+            help="Diese Spalten werden in der Analyse ignoriert – z. B. IDs, konstante Werte oder irrelevante Merkmale."
+        )
+        
+        df_filtered = df_filtered.drop(columns=columns_to_exclude)
+        
+        st.markdown("### 📊 Vorschau des bereinigten Datensatzes")
+        st.dataframe(df_filtered.head())
+    
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
@@ -466,135 +468,141 @@ with tabs[3]:
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[4]:
-    st.header("📊 K-Means Clustering & Interaktive Visualisierung")
-
-    if df_filtered is None or df_filtered.empty:
-        st.warning("Bitte lade und filtere zuerst die Daten im vorherigen Tab.")
+    if daten_eingeladen == False:
+        st.warning("Daten wurden noch nicht hochgeladen.")
     else:
-        df_cluster = df_filtered.copy()
-
-        # Anzahl Cluster auswählen
-        k = st.slider(
-            "Wähle die Anzahl der Cluster (K)",
-            min_value=1,
-            max_value=6,
-            value=3,
-            key="kmeans_slider_tab4"
-        )
-
-        # Kategorische Spalten label-encoden
-        for col in df_cluster.columns:
-            if df_cluster[col].dtype == "object" or df_cluster[col].dtype.name == "category":
-                df_cluster[col] = df_cluster[col].astype("category").cat.codes
-
-        # Numerische Spalten für Clustering
-        numeric_df = df_cluster.select_dtypes(include=["number"])
-
-        # KMeans Clustering durchführen
-        from sklearn.cluster import KMeans
-        model = KMeans(n_clusters=k, n_init="auto", random_state=42)
-        df_cluster["cluster"] = model.fit_predict(numeric_df)
-
-        st.success(f"✅ Clustering mit **{k} Clustern** durchgeführt.")
-
-        # Auswahl der Achsen für Scatterplot
-        st.markdown("### 📊 Interaktive Cluster-Visualisierung (Scatterplot)")
-
-        x_col = st.selectbox(
-            "X-Achse wählen:",
-            options=numeric_df.columns.tolist(),
-            index=0,
-            key="scatter_x_col"
-        )
-        y_col = st.selectbox(
-            "Y-Achse wählen:",
-            options=numeric_df.columns.tolist(),
-            index=1 if len(numeric_df.columns) > 1 else 0,
-            key="scatter_y_col"
-        )
-
-        import plotly.express as px
-
-        fig = px.scatter(
-            df_cluster,
-            x=x_col,
-            y=y_col,
-            color=df_cluster["cluster"].astype(str),
-            labels={"color": "Cluster"},
-            title=f"Cluster-Visualisierung: {x_col} vs. {y_col}",
-            color_discrete_sequence=px.colors.qualitative.Dark24
-        )
-
-        st.plotly_chart(fig, use_container_width=True)
-
-        # Datensatz mit Cluster-Zuweisung anzeigen, Cluster als erste Spalte
-        df_cluster = df_cluster.reset_index(drop=True)
-        cols_order = ["cluster"] + [col for col in df_cluster.columns if col != "cluster"]
-        st.markdown("### 🔍 Datensatz mit Cluster-Zuweisung:")
-        st.dataframe(df_cluster[cols_order])
-        st.markdown(f"📋 **Datensatz enthält {df_cluster.shape[0]} Zeilen und {df_cluster.shape[1]} Spalten.**")
+        st.header("📊 K-Means Clustering & Interaktive Visualisierung")
+    
+        if df_filtered is None or df_filtered.empty:
+            st.warning("Bitte lade und filtere zuerst die Daten im vorherigen Tab.")
+        else:
+            df_cluster = df_filtered.copy()
+    
+            # Anzahl Cluster auswählen
+            k = st.slider(
+                "Wähle die Anzahl der Cluster (K)",
+                min_value=1,
+                max_value=6,
+                value=3,
+                key="kmeans_slider_tab4"
+            )
+    
+            # Kategorische Spalten label-encoden
+            for col in df_cluster.columns:
+                if df_cluster[col].dtype == "object" or df_cluster[col].dtype.name == "category":
+                    df_cluster[col] = df_cluster[col].astype("category").cat.codes
+    
+            # Numerische Spalten für Clustering
+            numeric_df = df_cluster.select_dtypes(include=["number"])
+    
+            # KMeans Clustering durchführen
+            from sklearn.cluster import KMeans
+            model = KMeans(n_clusters=k, n_init="auto", random_state=42)
+            df_cluster["cluster"] = model.fit_predict(numeric_df)
+    
+            st.success(f"✅ Clustering mit **{k} Clustern** durchgeführt.")
+    
+            # Auswahl der Achsen für Scatterplot
+            st.markdown("### 📊 Interaktive Cluster-Visualisierung (Scatterplot)")
+    
+            x_col = st.selectbox(
+                "X-Achse wählen:",
+                options=numeric_df.columns.tolist(),
+                index=0,
+                key="scatter_x_col"
+            )
+            y_col = st.selectbox(
+                "Y-Achse wählen:",
+                options=numeric_df.columns.tolist(),
+                index=1 if len(numeric_df.columns) > 1 else 0,
+                key="scatter_y_col"
+            )
+    
+            import plotly.express as px
+    
+            fig = px.scatter(
+                df_cluster,
+                x=x_col,
+                y=y_col,
+                color=df_cluster["cluster"].astype(str),
+                labels={"color": "Cluster"},
+                title=f"Cluster-Visualisierung: {x_col} vs. {y_col}",
+                color_discrete_sequence=px.colors.qualitative.Dark24
+            )
+    
+            st.plotly_chart(fig, use_container_width=True)
+    
+            # Datensatz mit Cluster-Zuweisung anzeigen, Cluster als erste Spalte
+            df_cluster = df_cluster.reset_index(drop=True)
+            cols_order = ["cluster"] + [col for col in df_cluster.columns if col != "cluster"]
+            st.markdown("### 🔍 Datensatz mit Cluster-Zuweisung:")
+            st.dataframe(df_cluster[cols_order])
+            st.markdown(f"📋 **Datensatz enthält {df_cluster.shape[0]} Zeilen und {df_cluster.shape[1]} Spalten.**")
 
 
 # ---------------------------------------------------------------------------------------------------
 # ---------------------------------------------------------------------------------------------------
 with tabs[5]:
-    st.header("📊 Boxplot-Visualisierung der Cluster")
-
-    if df_cluster is None or "cluster" not in df_cluster.columns:
-        st.warning("Bitte lade zuerst einen Datensatz mit der Spalte 'cluster' hoch oder führe die Clusteranalyse aus.")
+    if daten_eingeladen == False:
+        st.warning("Daten wurden noch nicht hochgeladen.")
     else:
-        st.markdown("### Spalten zur Visualisierung auswählen:")
-        selected_columns = st.multiselect(
-            label="Wähle eine oder mehrere Spalten (XY-Werte) für Boxplots:",
-            options=column_classification["xy"],
-            default=[]
-        )
-
-        if len(selected_columns) == 0:
-            st.info("Bitte wähle mindestens eine Spalte aus, um Boxplots zu sehen.")
+        st.header("📊 Boxplot-Visualisierung der Cluster")
+    
+        if df_cluster is None or "cluster" not in df_cluster.columns:
+            st.warning("Bitte lade zuerst einen Datensatz mit der Spalte 'cluster' hoch oder führe die Clusteranalyse aus.")
         else:
-            for col in selected_columns:
-                st.subheader(f"Boxplot für {col}")
-                fig, ax = plt.subplots(figsize=(8, 4))
-                sns.boxplot(
-                    data=df_cluster,
-                    x="cluster",
-                    y=col,
-                    ax=ax,
-                    palette="Set2"  # Farbpalette für Cluster-Gruppen
-                )
-                ax.set_xlabel("Cluster")
-                ax.set_ylabel(col)
-                st.pyplot(fig)
-
-        st.divider()
-
-        # Mittelwerte berechnen (nur numerische Spalten)
-        group_means_all = df_cluster.groupby("cluster").mean(numeric_only=True).round(3)
-
-        # Fehlende Spalten mit '-' auffüllen (für nicht numerische Spalten)
-        for col in df_cluster.columns:
-            if col not in group_means_all.columns and col != "cluster":
-                group_means_all[col] = "-"
-
-        # Spalten sortieren wie im Original DataFrame (ohne 'cluster')
-        group_means_all = group_means_all.reindex(columns=[col for col in df_cluster.columns if col != "cluster"])
-
-        # Tabelle transponieren, sodass Cluster die Spalten sind und Features die Zeilen
-        group_means_all_T = group_means_all.transpose()
-        
-
-        st.markdown("### Mittelwerte aller Spalten je Cluster")
-        st.dataframe(group_means_all_T)
-        
-        st.divider()
-        
-        st.markdown("### Datensatz mit Cluster-Gruppierungen downloaden")
-        
-        csv_data = df_cluster.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label="Cluster-Daten als CSV herunterladen",
-            data=csv_data,
-            file_name="cluster_data.csv",
-            mime="text/csv"
-        )
+            st.markdown("### Spalten zur Visualisierung auswählen:")
+            selected_columns = st.multiselect(
+                label="Wähle eine oder mehrere Spalten (XY-Werte) für Boxplots:",
+                options=column_classification["xy"],
+                default=[]
+            )
+    
+            if len(selected_columns) == 0:
+                st.info("Bitte wähle mindestens eine Spalte aus, um Boxplots zu sehen.")
+            else:
+                for col in selected_columns:
+                    st.subheader(f"Boxplot für {col}")
+                    fig, ax = plt.subplots(figsize=(8, 4))
+                    sns.boxplot(
+                        data=df_cluster,
+                        x="cluster",
+                        y=col,
+                        ax=ax,
+                        palette="Set2"  # Farbpalette für Cluster-Gruppen
+                    )
+                    ax.set_xlabel("Cluster")
+                    ax.set_ylabel(col)
+                    st.pyplot(fig)
+    
+            st.divider()
+    
+            # Mittelwerte berechnen (nur numerische Spalten)
+            group_means_all = df_cluster.groupby("cluster").mean(numeric_only=True).round(3)
+    
+            # Fehlende Spalten mit '-' auffüllen (für nicht numerische Spalten)
+            for col in df_cluster.columns:
+                if col not in group_means_all.columns and col != "cluster":
+                    group_means_all[col] = "-"
+    
+            # Spalten sortieren wie im Original DataFrame (ohne 'cluster')
+            group_means_all = group_means_all.reindex(columns=[col for col in df_cluster.columns if col != "cluster"])
+    
+            # Tabelle transponieren, sodass Cluster die Spalten sind und Features die Zeilen
+            group_means_all_T = group_means_all.transpose()
+            
+    
+            st.markdown("### Mittelwerte aller Spalten je Cluster")
+            st.dataframe(group_means_all_T)
+            
+            st.divider()
+            
+            st.markdown("### Datensatz mit Cluster-Gruppierungen downloaden")
+            
+            csv_data = df_cluster.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="Cluster-Daten als CSV herunterladen",
+                data=csv_data,
+                file_name="cluster_data.csv",
+                mime="text/csv"
+            )
