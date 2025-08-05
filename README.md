@@ -1,23 +1,21 @@
-# 🤖 Customer Data Analytics - Machine Learning
+# 🤖 Customer Data Analytics – Interaktive ML-Plattform
 
+Diese interaktive Streamlit-App ermöglicht es Nutzerinnen und Nutzern, eigene Kundendaten hochzuladen, visuell zu analysieren, automatisiert zu bereinigen und mithilfe von **K-Means-Clustering** datengestützte Kundensegmente zu identifizieren – ohne Programmierkenntnisse.
 
-This is a Machine Learning App.
+## 🔍 Was bietet die App?
 
-## Demo App
+- **Datenimport & Erkennung** gängiger Dateiformate (CSV, Excel, TXT)
+- **Automatische Trennzeichenerkennung**
+- **Datenbereinigung** durch automatische Entfernung fehlender Werte und Ausreißer (Six-Sigma-Logik)
+- **Interaktive Visualisierung** von Verteilungen, Beziehungen und Clustern (Plotly, Matplotlib, Seaborn)
+- **K-Means Clustering** inklusive verständlicher Erklärung und Live-Demo
+- **Explorative Analyse** der erkannten Cluster via Boxplots und Cluster-Mittelwerten
+- **Datenexport** zur Weiterverarbeitung
+
+## 🎯 Zielgruppe
+
+Diese App richtet sich an alle, die mit Kundendaten arbeiten – z. B. aus Marketing, Vertrieb oder Data Science – und **intuitiv Muster, Gruppen oder Anomalien erkennen** möchten.
+
+## 🚀 Jetzt ausprobieren
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://customer_data_analytics.streamlit.app/)
-
-## GitHub Codespaces
-
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/streamlit/app-starter-kit?quickstart=1)
-
-## Section Heading
-
-This is filler text, please replace this with text for this section.
-
-## Further Reading
-
-This is filler text, please replace this with a explanatory text about further relevant resources for this repo
-- Resource 1
-- Resource 2
-- Resource 3
