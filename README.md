@@ -1,6 +1,6 @@
-# 🤖 Customer Data Analytics – Interaktive ML-Plattform
+# 🤖 Customer Data Analytics Tool
 
-Diese interaktive Streamlit-App ermöglicht es Nutzerinnen und Nutzern, eigene Kundendaten hochzuladen, visuell zu analysieren, automatisiert zu bereinigen und mithilfe von **K-Means-Clustering** datengestützte Kundensegmente zu identifizieren – ohne Programmierkenntnisse.
+Diese Streamlit-App bietet eine intuitiv bedienbare Oberfläche zur Analyse und Segmentierung von Kundendaten – vollständig im Browser und ohne Programmierkenntnisse. Nutzerinnen und Nutzer können eigene Datensätze hochladen, automatisch bereinigen und mithilfe von **K-Means-Clustering** datenbasierte Kundengruppen identifizieren.
 
 ## 🔍 Was bietet die App?
 
