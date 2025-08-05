@@ -5,11 +5,10 @@ Diese Streamlit-App bietet eine intuitiv bedienbare Oberfläche zur Analyse und 
 ## 🔍 Was bietet die App?
 
 - **Datenimport & Erkennung** gängiger Dateiformate (CSV, Excel, TXT)
-- **Automatische Trennzeichenerkennung**
-- **Datenbereinigung** durch automatische Entfernung fehlender Werte und Ausreißer (Six-Sigma-Logik)
+- **Datenbereinigung** durch automatische Filterung fehlender Werte und Ausreißer (Six-Sigma-Logik)
 - **Interaktive Visualisierung** von Verteilungen, Beziehungen und Clustern (Plotly, Matplotlib, Seaborn)
 - **K-Means Clustering** inklusive verständlicher Erklärung und Live-Demo
-- **Explorative Analyse** der erkannten Cluster via Boxplots und Cluster-Mittelwerten
+- **Explorative Analyse** der erkannten Cluster via Visualisierungen und Boxplotdiagrammen 
 - **Datenexport** zur Weiterverarbeitung
 
 ## 🎯 Zielgruppe
