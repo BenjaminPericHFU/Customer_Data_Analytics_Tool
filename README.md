@@ -18,4 +18,5 @@ Diese App richtet sich an alle, die mit Kundendaten arbeiten – z. B. aus Mar
 
 ## 🚀 Jetzt ausprobieren
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://customer_data_analytics.streamlit.app/)
+[![Streamlit App]([https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://customer_data_analytics.streamlit.app/](https://customerdataanalyticstool-kq8gjbkylkzyxqnbtwu5pt.streamlit.app/ ))
+https://customerdataanalyticstool-kq8gjbkylkzyxqnbtwu5pt.streamlit.app/  
